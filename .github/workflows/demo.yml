@@ -27,10 +27,20 @@ jobs:
           message: "AI bot is preparing code suggestions."
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8 
+          run: |
+            python -m pip install --upgrade pip
+            pip install flake8
+      - name: execute py script # run file
+        run: |
+          python .github/workflows/script/test.py
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Powershell repo
-        uses: actions/checkout@v2
+        #uses: actions/checkout@v2
           
       - uses: pacoxu/actions-comment-on-issue@1.0.3
         name: Create Code Suggestions PR
@@ -48,16 +58,6 @@ jobs:
           # The branch to create
           branch: issuebranch
                     
-      - name: setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8 
-          run: |
-            python -m pip install --upgrade pip
-            pip install flake8
-      - name: execute py script # run file
-        run: |
-          python script/test.py
 
       - name: create pull request
         run: |
