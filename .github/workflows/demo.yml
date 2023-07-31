@@ -47,14 +47,7 @@ jobs:
         with:
           # The branch to create
           branch: issuebranch
-  
-      - name: create pull request
-        run: |
-          gh pr create -R ${{ github.event.issue.user.login }}/azure-powershell -H issuebranch --title 'test PR' --body 'resolves https://github.com/${{ github.event.issue.user.login }}/azure-powershell/issues/${{ github.event.issue.number }}'
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GH_ENTERPRISE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  
+                    
       - name: setup python
         uses: actions/setup-python@v2
         with:
@@ -65,3 +58,10 @@ jobs:
       - name: execute py script # run file
         run: |
           python script/test.py
+
+      - name: create pull request
+        run: |
+          gh pr create -R ${{ github.event.issue.user.login }}/azure-powershell -H issuebranch --title 'test PR' --body 'resolves https://github.com/${{ github.event.issue.user.login }}/azure-powershell/issues/${{ github.event.issue.number }}'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GH_ENTERPRISE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
