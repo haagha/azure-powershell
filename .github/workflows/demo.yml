@@ -36,7 +36,7 @@ jobs:
             pip install flake8
       - name: execute py script # run file
         run: |
-          python script/test.py
+          python ./.github/workflows/script/test.py
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Powershell repo
