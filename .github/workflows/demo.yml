@@ -44,7 +44,7 @@ jobs:
             pip install flake8
       - name: execute py script # run file
         run: |
-          python ${{ GITHUB_WORKSPACE }}/.github/workflows/script/test.py
+          python ./.github/workflows/script/test.py
 
           
       - uses: pacoxu/actions-comment-on-issue@1.0.3
