@@ -26,6 +26,14 @@ jobs:
         with:
           message: "AI bot is preparing code suggestions."
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Powershell repo
+        uses: actions/checkout@v2
+        
+      - name: Get directory
+        run: ls
         
       - name: setup python
         uses: actions/setup-python@v2
@@ -36,11 +44,8 @@ jobs:
             pip install flake8
       - name: execute py script # run file
         run: |
-          python ./.github/workflows/script/test.py
+          python ${{ GITHUB_WORKSPACE }}/.github/workflows/script/test.py
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout Powershell repo
-        uses: actions/checkout@v2
           
       - uses: pacoxu/actions-comment-on-issue@1.0.3
         name: Create Code Suggestions PR
