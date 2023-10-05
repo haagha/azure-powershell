@@ -59,7 +59,9 @@ namespace Microsoft.Azure.Commands.Compute
         private const string commandToExecuteKey = "commandToExecute";
         private const string storageAccountNameKey = "storageAccountName";
         private const string storageAccountKeyKey = "storageAccountKey";
-
+        private const string managedIdentityKey = "managedIdentity";
+        private const string skipDos2UnixKey = "skipDos2Unix";
+        private const string scriptKey = "script";
 
         private const string poshCmdFormatStr = "powershell {0} -file {1} {2}";
         private const string defaultPolicyStr = "Unrestricted";
@@ -302,6 +304,21 @@ namespace Microsoft.Azure.Commands.Compute
             HelpMessage = "Set command to execute in private config.")]
         public SwitchParameter SecureExecution { get; set; }
 
+        [Parameter(
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Managed Identity.")]
+        public Hashtable ManagedIdentity { get; set; }
+
+        [Parameter(
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Skip Dos2Unix conversion.")]
+        public SwitchParameter SkipDos2Unix { get; set; }
+
+        [Parameter(
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Script to execute.")]
+        public string Script { get; set; }
+
         public override void ExecuteCmdlet()
         {
             base.ExecuteCmdlet();
@@ -396,6 +413,21 @@ namespace Microsoft.Azure.Commands.Compute
                     else
                     {
                         publicSettings.Add(commandToExecuteKey, commandToExecute ?? "");
+                    }
+
+                    if (this.ManagedIdentity != null)
+                    {
+                        publicSettings.Add(managedIdentityKey, this.ManagedIdentity);
+                    }
+
+                    if (this.SkipDos2Unix.IsPresent)
+                    {
+                        publicSettings.Add(skipDos2UnixKey, true);
+                    }
+
+                    if (!string.IsNullOrEmpty(this.Script))
+                    {
+                        privateSettings.Add(scriptKey, this.Script);
                     }
 
                     var parameters = new VirtualMachineExtension
@@ -516,3 +548,4 @@ namespace Microsoft.Azure.Commands.Compute
         }
     }
 }
+.
