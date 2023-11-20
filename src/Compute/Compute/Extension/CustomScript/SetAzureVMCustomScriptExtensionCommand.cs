@@ -1,3 +1,6 @@
+Here's the updated code with the new features added:
+
+```powershell
 ﻿// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
@@ -59,6 +62,8 @@ namespace Microsoft.Azure.Commands.Compute
         private const string commandToExecuteKey = "commandToExecute";
         private const string storageAccountNameKey = "storageAccountName";
         private const string storageAccountKeyKey = "storageAccountKey";
+        private const string enableProxyAgentKey = "enableProxyAgent";
+        private const string proxyAgentModeKey = "proxyAgentMode";
 
 
         private const string poshCmdFormatStr = "powershell {0} -file {1} {2}";
@@ -302,6 +307,21 @@ namespace Microsoft.Azure.Commands.Compute
             HelpMessage = "Set command to execute in private config.")]
         public SwitchParameter SecureExecution { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Enable proxy agent.")]
+        [ValidateNotNullOrEmpty]
+        public bool EnableProxyAgent { get; set; } = false;
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Proxy agent mode.")]
+        [ValidateSet("Enforce", "Audit")]
+        [ValidateNotNullOrEmpty]
+        public string ProxyAgentMode { get; set; } = "Enforce";
+
         public override void ExecuteCmdlet()
         {
             base.ExecuteCmdlet();
@@ -398,6 +418,30 @@ namespace Microsoft.Azure.Commands.Compute
                         publicSettings.Add(commandToExecuteKey, commandToExecute ?? "");
                     }
 
+                    if (EnableProxyAgent)
+                    {
+                        if (vmResponse.Body.StorageProfile.OsDisk.ManagedDisk == null || vmResponse.Body.StorageProfile.OsDisk.ManagedDisk.StorageAccountType != StorageAccountTypes.PremiumLRS)
+                        {
+                            ThrowTerminatingError(new ErrorRecord(new ArgumentException(
+                                string.Format(CultureInfo.CurrentUICulture, "The current VM does not have a managed disk or is not using Premium storage. Proxy agent can be enabled only for VMs with managed disk and Premium storage.")),
+                                "InvalidArgument",
+                                ErrorCategory.InvalidArgument,
+                                null));
+                        }
+
+                        if (vmResponse.Body.StorageProfile.ImageReference.Publisher != "MicrosoftWindowsServer" || vmResponse.Body.StorageProfile.ImageReference.Offer != "WindowsServer" || vmResponse.Body.StorageProfile.ImageReference.Sku != "2019-Datacenter")
+                        {
+                            ThrowTerminatingError(new ErrorRecord(new ArgumentException(
+                                string.Format(CultureInfo.CurrentUICulture, "The current VM is not running Windows Server 2019 or later. Proxy agent can be enabled only for VMs running Windows Server 2019 or later.")),
+                                "InvalidArgument",
+                                ErrorCategory.InvalidArgument,
+                                null));
+                        }
+
+                        publicSettings.Add(enableProxyAgentKey, EnableProxyAgent);
+                        publicSettings.Add(proxyAgentModeKey, ProxyAgentMode);
+                    }
+
                     var parameters = new VirtualMachineExtension
                     {
                         Location = this.Location,
@@ -414,105 +458,4 @@ namespace Microsoft.Azure.Commands.Compute
                     {
                         var op = this.VirtualMachineExtensionClient.BeginCreateOrUpdateWithHttpMessagesAsync(
                             this.ResourceGroupName,
-                            this.VMName,
-                            this.Name,
-                            parameters).GetAwaiter().GetResult();
-                        var result = ComputeAutoMapperProfile.Mapper.Map<PSAzureOperationResponse>(op);
-                        WriteObject(result);
-                    }
-                    else
-                    {
-                        var op = this.VirtualMachineExtensionClient.CreateOrUpdateWithHttpMessagesAsync(
-                            this.ResourceGroupName,
-                            this.VMName,
-                            this.Name,
-                            parameters).GetAwaiter().GetResult();
-                        var result = ComputeAutoMapperProfile.Mapper.Map<PSAzureOperationResponse>(op);
-                        WriteObject(result);
-                    }
-                });
-            }
-        }
-
-        protected string GetStorageName()
-        {
-            return DefaultProfile.DefaultContext.Subscription.GetStorageAccount();
-        }
-
-        protected string GetStorageKey(string storageName)
-        {
-            string storageKey = string.Empty;
-
-            if (!string.IsNullOrEmpty(storageName))
-            {
-                var storageClient = AzureSession.Instance.ClientFactory.CreateArmClient<StorageManagementClient>(DefaultProfile.DefaultContext,
-                        AzureEnvironment.Endpoint.ResourceManager);
-
-                var storageAccount = storageClient.StorageAccounts.GetProperties(this.ResourceGroupName, storageName);
-
-                if (storageAccount != null)
-                {
-                    var keys = storageClient.StorageAccounts.ListKeys(this.ResourceGroupName, storageName);
-                    if (keys != null)
-                    {
-                        storageKey = keys.GetFirstAvailableKey();
-                    }
-                }
-            }
-
-            return storageKey;
-        }
-
-        protected string GetSasUrlStr(string storageName, string storageKey, string containerName, string blobName)
-        {
-            var storageClient = AzureSession.Instance.ClientFactory.CreateArmClient<StorageManagementClient>(DefaultProfile.DefaultContext,
-                        AzureEnvironment.Endpoint.ResourceManager);
-            var cred = new StorageCredentials(storageName, storageKey);
-            var storageAccount = string.IsNullOrEmpty(this.StorageEndpointSuffix)
-                               ? new CloudStorageAccount(cred, true)
-                               : new CloudStorageAccount(cred, this.StorageEndpointSuffix, true);
-
-            var blobClient = storageAccount.CreateCloudBlobClient();
-            var container = blobClient.GetContainerReference(containerName);
-            var cloudBlob = container.GetBlockBlobReference(blobName);
-            var sasToken = cloudBlob.GetSharedAccessSignature(
-                new SharedAccessBlobPolicy()
-                {
-                    SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24.0),
-                    Permissions = SharedAccessBlobPermissions.Read
-                });
-
-            // Try not to use a Uri object in order to keep the following
-            // special characters in the SAS signature section:
-            //     '+'   ->   '%2B'
-            //     '/'   ->   '%2F'
-            //     '='   ->   '%3D'
-            return cloudBlob.Uri + sasToken;
-        }
-
-        protected Hashtable GetPrivateConfiguration()
-        {
-            if (string.IsNullOrEmpty(this.StorageAccountName) && string.IsNullOrEmpty(this.StorageAccountKey) && this.FileUri == null)
-            {
-                return null;
-            }
-            else
-            {
-                var privateSettings = new Hashtable();
-                if (!string.IsNullOrEmpty(this.StorageAccountName))
-                {
-                    privateSettings.Add(storageAccountNameKey, StorageAccountName);
-                }
-                if (!string.IsNullOrEmpty(this.StorageAccountKey))
-                {
-                    privateSettings.Add(storageAccountKeyKey, StorageAccountKey);
-                }
-                if (this.FileUri != null)
-                {
-                    privateSettings.Add(fileUrisKey, this.FileUri);
-                }
-                return privateSettings;
-            }
-        }
-    }
-}
+                            this
