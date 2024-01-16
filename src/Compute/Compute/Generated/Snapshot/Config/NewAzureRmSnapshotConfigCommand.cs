@@ -1,4 +1,4 @@
-//
+ //
 // Copyright (c) Microsoft and contributors.  All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -186,6 +186,12 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         [PSArgumentCompleter("X64", "Arm64")]
         public string Architecture { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Required if createOption is CopyFromSanSnapshot. This is the ARM id of the source elastic san volume snapshot.")]
+        public string ElasticSanResourceId { get; set; }
+
         protected override void ProcessRecord()
         {
             if (ShouldProcess("Snapshot", "New"))
@@ -266,6 +272,15 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                     vCreationData = new CreationData();
                 }
                 vCreationData.SourceResourceId = this.SourceResourceId;
+            }
+
+            if (this.IsParameterBound(c => c.ElasticSanResourceId))
+            {
+                if (vCreationData == null)
+                {
+                    vCreationData = new CreationData();
+                }
+                vCreationData.ElasticSanResourceId = this.ElasticSanResourceId;
             }
 
             if (this.IsParameterBound(c => c.EncryptionSettingsEnabled))
@@ -384,3 +399,4 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         }
     }
 }
+.
