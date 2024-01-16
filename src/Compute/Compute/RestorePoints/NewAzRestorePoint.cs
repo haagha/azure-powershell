@@ -1,4 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,20 +62,17 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             HelpMessage = "Set the region of the restore point")]
         public string Location { get; set; }
 
-
         [Parameter(
             Mandatory = false,
             ValueFromPipeline = true,
             HelpMessage = "ARM Id of the source restore point")]
         public string RestorePointId { get; set; }
 
-
         [Parameter(
             Mandatory = false,
             ValueFromPipeline = true,
             HelpMessage = "List of disk resource Id values that the customer wishes to exclude from the restore point. If no disks are specified, all disks will be included.")]
         public string[] DisksToExclude { get; set; }
-
 
         [Parameter(
             Mandatory = false,
@@ -83,6 +81,41 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         [PSArgumentCompleter("CrashConsistent", "FileSystemConsistent", "ApplicationConsistent")]
         public string ConsistencyMode { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "ARM ID of disk/restore point")]
+        public string SourceOSResource { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "ARM ID of disk encryption set")]
+        public string OSRestorePointEncryptionSetId { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "Type of encryption")]
+        public string OSRestorePointEncryptionType { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "Multiple ARM IDs of disks/restore points")]
+        public string[] SourceDataDiskResource { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "Multiple ARM IDs of disk encryption sets")]
+        public string[] DataDiskRestorePointEncryptionSetId { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "Types of encryption")]
+        public string[] DataDiskRestorePointEncryptionType { get; set; }
 
         public override void ExecuteCmdlet()
         {
