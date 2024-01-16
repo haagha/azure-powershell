@@ -1,4 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,7 +60,9 @@ namespace Microsoft.Azure.Commands.Compute
         private const string commandToExecuteKey = "commandToExecute";
         private const string storageAccountNameKey = "storageAccountName";
         private const string storageAccountKeyKey = "storageAccountKey";
-
+        private const string managedIdentityKey = "managedIdentity";
+        private const string skipDos2UnixKey = "skipDos2Unix";
+        private const string scriptKey = "script";
 
         private const string poshCmdFormatStr = "powershell {0} -file {1} {2}";
         private const string defaultPolicyStr = "Unrestricted";
@@ -302,6 +305,24 @@ namespace Microsoft.Azure.Commands.Compute
             HelpMessage = "Set command to execute in private config.")]
         public SwitchParameter SecureExecution { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Managed Identity for the VM.")]
+        public Hashtable ManagedIdentity { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Skip Dos2Unix for CSE Linux.")]
+        public SwitchParameter SkipDos2Unix { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Script for CSE Linux.")]
+        public string Script { get; set; }
+
         public override void ExecuteCmdlet()
         {
             base.ExecuteCmdlet();
@@ -396,6 +417,21 @@ namespace Microsoft.Azure.Commands.Compute
                     else
                     {
                         publicSettings.Add(commandToExecuteKey, commandToExecute ?? "");
+                    }
+
+                    if (this.ManagedIdentity != null)
+                    {
+                        privateSettings.Add(managedIdentityKey, this.ManagedIdentity);
+                    }
+
+                    if (this.SkipDos2Unix.IsPresent)
+                    {
+                        publicSettings.Add(skipDos2UnixKey, true);
+                    }
+
+                    if (!string.IsNullOrEmpty(this.Script))
+                    {
+                        privateSettings.Add(scriptKey, this.Script);
                     }
 
                     var parameters = new VirtualMachineExtension
