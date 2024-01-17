@@ -1,4 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
+csharp
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,28 +62,41 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             HelpMessage = "Set the region of the restore point")]
         public string Location { get; set; }
 
+        [Parameter(
+            Mandatory = true,
+            ValueFromPipeline = true,
+            HelpMessage = "ARM ID of the source OS disk/restore point")]
+        public string SourceOSResource { get; set; }
 
         [Parameter(
-            Mandatory = false,
+            Mandatory = true,
             ValueFromPipeline = true,
-            HelpMessage = "ARM Id of the source restore point")]
-        public string RestorePointId { get; set; }
-
+            HelpMessage = "ARM ID of the OS disk encryption set")]
+        public string OSRestorePointEncryptionSetId { get; set; }
 
         [Parameter(
-            Mandatory = false,
+            Mandatory = true,
             ValueFromPipeline = true,
-            HelpMessage = "List of disk resource Id values that the customer wishes to exclude from the restore point. If no disks are specified, all disks will be included.")]
-        public string[] DisksToExclude { get; set; }
-
+            HelpMessage = "Type of OS disk encryption")]
+        public string OSRestorePointEncryptionType { get; set; }
 
         [Parameter(
-            Mandatory = false,
+            Mandatory = true,
             ValueFromPipeline = true,
-            HelpMessage = "ConsistencyMode of the restore point. Can be specified in the input while creating a restore point. For now, only CrashConsistent is accepted as a valid input. Please refer to https://aka.ms/RestorePoints for more details.")]
-        [PSArgumentCompleter("CrashConsistent", "FileSystemConsistent", "ApplicationConsistent")]
-        public string ConsistencyMode { get; set; }
+            HelpMessage = "ARM IDs of the source data disks/restore points")]
+        public string[] SourceDataDiskResource { get; set; }
 
+        [Parameter(
+            Mandatory = true,
+            ValueFromPipeline = true,
+            HelpMessage = "ARM IDs of the data disk encryption sets")]
+        public string[] DataDiskRestorePointEncryptionSetId { get; set; }
+
+        [Parameter(
+            Mandatory = true,
+            ValueFromPipeline = true,
+            HelpMessage = "Types of data disk encryption")]
+        public string[] DataDiskRestorePointEncryptionType { get; set; }
 
         public override void ExecuteCmdlet()
         {
@@ -95,26 +109,25 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                     string restorePointName = this.Name;
                     string restorePointCollectionName = this.RestorePointCollectionName;
                     string location = this.Location;
-                    string restorePointId = this.RestorePointId;
-                    List<ApiEntityReference> disksExclude = new List<ApiEntityReference>();
+                    string sourceOSResource = this.SourceOSResource;
+                    string osRestorePointEncryptionSetId = this.OSRestorePointEncryptionSetId;
+                    string osRestorePointEncryptionType = this.OSRestorePointEncryptionType;
+                    string[] sourceDataDiskResource = this.SourceDataDiskResource;
+                    string[] dataDiskRestorePointEncryptionSetId = this.DataDiskRestorePointEncryptionSetId;
+                    string[] dataDiskRestorePointEncryptionType = this.DataDiskRestorePointEncryptionType;
 
                     RestorePoint restorePoint = new RestorePoint();
 
-                    if(this.IsParameterBound(c=> c.RestorePointId))
-                    {
-                        restorePoint.SourceRestorePoint = new ApiEntityReference { Id = restorePointId };
-                    }
+                    restorePoint.SourceOSResource = new ApiEntityReference { Id = sourceOSResource };
+                    restorePoint.OSRestorePointEncryptionSetId = osRestorePointEncryptionSetId;
+                    restorePoint.OSRestorePointEncryptionType = osRestorePointEncryptionType;
 
-                    if (this.IsParameterBound(c => c.DisksToExclude))
+                    for (int i = 0; i < sourceDataDiskResource.Length; i++)
                     {
-                        foreach (string s in DisksToExclude)
-                        {
-                            disksExclude.Add(new ApiEntityReference(s));
-                        }
-                        restorePoint.ExcludeDisks = disksExclude;
+                        restorePoint.SourceDataDiskResource.Add(new ApiEntityReference { Id = sourceDataDiskResource[i] });
+                        restorePoint.DataDiskRestorePointEncryptionSetId.Add(dataDiskRestorePointEncryptionSetId[i]);
+                        restorePoint.DataDiskRestorePointEncryptionType.Add(dataDiskRestorePointEncryptionType[i]);
                     }
-
-                    restorePoint.ConsistencyMode = this.ConsistencyMode;
 
                     var result = RestorePointClient.Create(resourceGroup, restorePointCollectionName, restorePointName, restorePoint);
                         

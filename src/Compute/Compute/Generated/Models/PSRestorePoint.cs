@@ -1,4 +1,5 @@
-﻿// ----------------------------------------------------------------------------------
+csharp
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,5 +49,16 @@ namespace Microsoft.Azure.Commands.Compute.Automation.Models
 
         public ApiEntityReference SourceRestorePoint { get; set; }
 
+        public ApiEntityReference SourceOSResource { get; set; }
+
+        public string OSRestorePointEncryptionSetId { get; set; }
+
+        public string OSRestorePointEncryptionType { get; set; }
+
+        public IList<ApiEntityReference> SourceDataDiskResource { get; set; }
+
+        public IList<string> DataDiskRestorePointEncryptionSetId { get; set; }
+
+        public IList<string> DataDiskRestorePointEncryptionType { get; set; }
     }
 }
