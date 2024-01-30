@@ -20,6 +20,13 @@
 
 -->
 ## Upcoming Release
+* Added -SharingProfile parameter to the `New-AzCapacityReservationGroup` and `Update-AzCapacityReservationGroup` cmdlets.
+    - SharingProfile is a new parameter that contains an array of Arm resource ids of subscriptions.
+    - Example: "/subscriptions/{subscriptionId1}", "/subscriptions/{subscriptionId2}"
+    - This feature is in private preview and is behind a regional config flag "EnableCrossPartitionAssociationWithCapacityReservation" as well as a feature flag "Microsoft.Compute/CrossSubscriptionCapacityReservationPreview." The subscriptions need to be registered with this feature flag in order to use the sharing functionality.
+* Fixed the `Update-AzVmss` cmdlet so the `AutomaticRepairGracePeriod`, `AutomaticRepairAction`, and `EnableAutomaticRepair` parameters function correctly.
+* Updated help doc for `New-AzVM`, `New-AzVMConfig`, `New-AzVmss`, `New-AzVmssConfig`, `Update-AzVM`, and `Update-AzVmss` to include parameters that were previously added for Trusted Launch features.
+* Updated Azure.Core to 1.33.0.
 * Fixed the `Update-AzVmss` cmdlet so the `AutomaticRepairGracePeriod`, `AutomaticRepairAction`, and `EnableAutomaticRepair` parameters function correctly.
 * Updated help doc for `New-AzVM`, `New-AzVMConfig`, `New-AzVmss`, `New-AzVmssConfig`, `Update-AzVM`, and `Update-AzVmss` to include parameters that were previously added for Trusted Launch features.
 * Updated Azure.Core to 1.33.0.
