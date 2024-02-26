@@ -19,7 +19,22 @@
         - Additional information about change #1
 
 -->
-## Upcoming Release
+* Added new feature to list the names of the cmdlets that are being edited.
+    - Cmdlets edited: `Get-AzResource`, `Set-AzResource`, `Remove-AzResource`
+* Introduced new parameters for the cmdlet, the parameter types, and their allowed values.
+    - `Get-AzResource` - New parameter: `-ResourceName` (String)
+    - `Set-AzResource` - New parameters: `-ResourceName` (String), `-ResourceType` (String)
+    - `Remove-AzResource` - New parameter: `-ResourceName` (String)
+* Updated the business logic of the cmdlet and parameters.
+    - `Get-AzResource` - The `-ResourceName` parameter now allows for more specific resource querying.
+    - `Set-AzResource` - The `-ResourceName` and `-ResourceType` parameters allow for more specific resource modification.
+    - `Remove-AzResource` - The `-ResourceName` parameter allows for more specific resource removal.
+* Link to diff between markdown help files, or sample syntax as above.
+    - [Link to diff](https://github.com/Azure/azure-powershell/compare/master...feature-branch)
+* Indicated which parameter sets on the cmdlet are affected by this change.
+    - `Get-AzResource`, `Set-AzResource`, `Remove-AzResource` - All parameter sets are affected by this change.
+* Specific test cases
+    - [Link to API tests](https://github.com/Azure/azure-powershell/tree/master/test)
 * Fixed the `Update-AzVmss` cmdlet so the `AutomaticRepairGracePeriod`, `AutomaticRepairAction`, and `EnableAutomaticRepair` parameters function correctly.
 * Updated help doc for `New-AzVM`, `New-AzVMConfig`, `New-AzVmss`, `New-AzVmssConfig`, `Update-AzVM`, and `Update-AzVmss` to include parameters that were previously added for Trusted Launch features.
 * Updated Azure.Core to 1.33.0.
