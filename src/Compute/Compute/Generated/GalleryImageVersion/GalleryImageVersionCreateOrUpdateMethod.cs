@@ -1,4 +1,4 @@
-//
+None //
 // Copyright (c) Microsoft and contributors.  All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -243,7 +243,14 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                         {
                             galleryImageVersion.StorageProfile.Source = new GalleryArtifactVersionFullSource();
                         }
-                        galleryImageVersion.StorageProfile.Source.Id = this.SourceImageId;
+                        if (this.SourceImageId.Contains("/virtualMachines/"))
+                        {
+                            galleryImageVersion.StorageProfile.Source.VirtualMachineId = this.SourceImageId;
+                        }
+                        else
+                        {
+                            galleryImageVersion.StorageProfile.Source.Id = this.SourceImageId;
+                        }
 
                         var resourceId = ResourceId.TryParse(this.SourceImageId);
 
@@ -282,6 +289,315 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                     WriteObject(psObject);
                 }
                 
+            });
+        }
+
+        [Parameter(
+            ParameterSetName = "DefaultParameter",
+            Position = 0,
+            Mandatory = true,
+            ValueFromPipelineByPropertyName = true)]
+        [ResourceGroupCompleter]
+        public string ResourceGroupName { get; set; }
+
+        [Parameter(
+            ParameterSetName = "DefaultParameter",
+            Position = 1,
+            Mandatory = true,
+            ValueFromPipelineByPropertyName = true)]
+        public string GalleryName { get; set; }
+
+        [Parameter(
+            ParameterSetName = "DefaultParameter",
+            Position = 2,
+            Mandatory = true,
+            ValueFromPipelineByPropertyName = true)]
+        [Alias("GalleryImageName")]
+        public string GalleryImageDefinitionName { get; set; }
+
+        [Alias("GalleryImageVersionName")]
+        [Parameter(
+            ParameterSetName = "DefaultParameter",
+            Position = 3,
+            Mandatory = true,
+            ValueFromPipelineByPropertyName = true)]
+        public string Name { get; set; }
+
+        [Parameter(Mandatory = false, HelpMessage = "Run cmdlet in the background")]
+        public SwitchParameter AsJob { get; set; }
+
+        [Parameter(
+            Mandatory = true,
+            ValueFromPipelineByPropertyName = true)]
+        [LocationCompleter("Microsoft.Compute/Galleries")]
+        public string Location { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        public GalleryDataDiskImage [] DataDiskImage { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        public GalleryOSDiskImage OSDiskImage { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        public DateTime PublishingProfileEndOfLifeDate { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        public SwitchParameter PublishingProfileExcludeFromLatest { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        public int ReplicaCount { get; set; }
+
+        [Parameter(
+           Mandatory = false,
+           ValueFromPipelineByPropertyName = true)]
+        public string SourceImageId { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        [PSArgumentCompleter("Standard_LRS", "Standard_ZRS", "Premium_LRS", "StandardSSD_LRS")]
+        public string StorageAccountType { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        public Hashtable Tag { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true)]
+        public Hashtable[] TargetRegion { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "The target extended locations where the Image Version is going to be replicated to. This property is updatable.")]
+        public Hashtable[] TargetExtendedLocation { get; set; }
+    }
+
+    [Cmdlet(VerbsData.Update, ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "GalleryImageVersion", DefaultParameterSetName = "DefaultParameter", SupportsShouldProcess = true)]
+    [OutputType(typeof(PSGalleryImageVersion))]
+    public partial class UpdateAzureRmGalleryImageVersion : ComputeAutomationBaseCmdlet
+    {
+        public override void ExecuteCmdlet()
+        {
+            base.ExecuteCmdlet();
+            ExecuteClientAction(() =>
+            {
+                if (ShouldProcess(this.Name, VerbsData.Update))
+                {
+                    string resourceGroupName;
+                    string galleryName;
+                    string galleryImageName;
+                    string galleryImageVersionName;
+                    switch (this.ParameterSetName)
+                    {
+                        case "ResourceIdParameter":
+                            resourceGroupName = GetResourceGroupName(this.ResourceId);
+                            galleryName = GetResourceName(this.ResourceId, "Microsoft.Compute/Galleries", "Images", "Versions");
+                            galleryImageName = GetInstanceId(this.ResourceId, "Microsoft.Compute/Galleries", "Images", "Versions");
+                            galleryImageVersionName = GetVersion(this.ResourceId, "Microsoft.Compute/Galleries", "Images", "Versions");
+                            break;
+                        case "ObjectParameter":
+                            resourceGroupName = GetResourceGroupName(this.InputObject.Id);
+                            galleryName = GetResourceName(this.InputObject.Id, "Microsoft.Compute/Galleries", "Images", "Versions");
+                            galleryImageName = GetInstanceId(this.InputObject.Id, "Microsoft.Compute/Galleries", "Images", "Versions");
+                            galleryImageVersionName = GetVersion(this.InputObject.Id, "Microsoft.Compute/Galleries", "Images", "Versions");
+                            break;
+                        default:
+                            resourceGroupName = this.ResourceGroupName;
+                            galleryName = this.GalleryName;
+                            galleryImageName = this.GalleryImageDefinitionName;
+                            galleryImageVersionName = this.Name;
+                            break;
+                    }
+
+                    var galleryImageVersion = new GalleryImageVersion();
+
+                    if (this.ParameterSetName == "ObjectParameter")
+                    {
+                        ComputeAutomationAutoMapperProfile.Mapper.Map<PSGalleryImageVersion, GalleryImageVersion>(this.InputObject, galleryImageVersion);
+                    }
+                    else
+                    {
+                        galleryImageVersion = GalleryImageVersionsClient.Get(resourceGroupName, galleryName, galleryImageName, galleryImageVersionName);
+                    }
+
+                    if (this.IsParameterBound(c => c.Tag))
+                    {
+                        galleryImageVersion.Tags = this.Tag.Cast<DictionaryEntry>().ToDictionary(ht => (string)ht.Key, ht => (string)ht.Value);
+                    }
+
+                    if (this.IsParameterBound(c => c.ReplicaCount))
+                    {
+                        if (galleryImageVersion.PublishingProfile == null)
+                        {
+                            galleryImageVersion.PublishingProfile = new GalleryImageVersionPublishingProfile();
+                        }
+                        galleryImageVersion.PublishingProfile.ReplicaCount = this.ReplicaCount;
+                    }
+
+                    if (this.IsParameterBound(c => c.PublishingProfileExcludeFromLatest))
+                    {
+                        if (galleryImageVersion.PublishingProfile == null)
+                        {
+                            galleryImageVersion.PublishingProfile = new GalleryImageVersionPublishingProfile();
+                        }
+                        galleryImageVersion.PublishingProfile.ExcludeFromLatest = this.PublishingProfileExcludeFromLatest.IsPresent;
+                    }
+
+                    if (this.IsParameterBound(c => c.PublishingProfileEndOfLifeDate))
+                    {
+                        if (galleryImageVersion.PublishingProfile == null)
+                        {
+                            galleryImageVersion.PublishingProfile = new GalleryImageVersionPublishingProfile();
+                        }
+                        galleryImageVersion.PublishingProfile.EndOfLifeDate = this.PublishingProfileEndOfLifeDate;
+                    }
+
+                    if (this.IsParameterBound(c => c.TargetRegion))
+                    {
+                        if (galleryImageVersion.PublishingProfile == null)
+                        {
+                            galleryImageVersion.PublishingProfile = new GalleryImageVersionPublishingProfile();
+                        }
+                        galleryImageVersion.PublishingProfile.TargetRegions = new List<TargetRegion>();
+                        foreach (var t in this.TargetRegion)
+                        {
+                            var target = new TargetRegion()
+                            {
+                                Name = (string)t["Name"],
+                                RegionalReplicaCount = (int?)t["ReplicaCount"],
+                                StorageAccountType = (string)t["StorageAccountType"],
+                            };
+                            if (t["Encryption"] != null)
+                            {
+                                var osDiskEncryptionSetId = (string)((Hashtable)((Hashtable)t["Encryption"])["osDiskImage"])["DiskEncryptionSetId"];
+                                var osDiskImageEncryption = new OSDiskImageEncryption(osDiskEncryptionSetId);
+
+                                List<DataDiskImageEncryption> dataDiskImageEncryption = null;
+                                var dataDiskImage = (object[])((Hashtable)t["Encryption"])["dataDiskImages"];
+
+                                if (dataDiskImage != null)
+                                {
+                                    dataDiskImageEncryption = new List<DataDiskImageEncryption>();
+                                    foreach (Hashtable dataDiskEncryptionSetId in dataDiskImage)
+                                    {
+                                        DataDiskImageEncryption d = new DataDiskImageEncryption((int)dataDiskEncryptionSetId["Lun"], (string)dataDiskEncryptionSetId["DiskEncryptionSetId"]);
+                                        dataDiskImageEncryption.Add(d);
+                                    }
+                                }
+
+                                target.Encryption = new EncryptionImages(osDiskImageEncryption, dataDiskImageEncryption);
+                            }
+
+                            galleryImageVersion.PublishingProfile.TargetRegions.Add(target);
+                        }
+                    }
+
+                    if (this.IsParameterBound(c => c.TargetExtendedLocation))
+                    {
+                        if (galleryImageVersion.PublishingProfile == null)
+                        {
+                            galleryImageVersion.PublishingProfile = new GalleryImageVersionPublishingProfile();
+                        }
+
+                        List<GalleryTargetExtendedLocation> targetExtendedLocations = new List<GalleryTargetExtendedLocation>();
+                        foreach (var t in this.TargetExtendedLocation)
+                        {
+                            // initialize Gallery Target Extended Location 
+                            var targetExtendedLocation = new GalleryTargetExtendedLocation()
+                            {
+                                Name = (string)t["Name"] != null ? (string)t["Name"] : (string)t["Location"],
+                                ExtendedLocationReplicaCount = (int?)t["ReplicaCount"],
+                                StorageAccountType = (string)t["StorageAccountType"],
+                            };
+
+                            // initialize Extended Location and add it to Target Extended Location
+                            if (t["ExtendedLocation"] != null)
+                            {
+                                GalleryExtendedLocation extendedLocation = new GalleryExtendedLocation()
+                                {
+                                    Name = (string)((Hashtable)t["ExtendedLocation"])["Name"],
+                                    Type = (string)((Hashtable)t["ExtendedLocation"])["Type"]
+                                };
+                                targetExtendedLocation.ExtendedLocation = extendedLocation;
+                            }
+
+                            // also add Encryption to Target Extended Location
+                            if (t["Encryption"] != null)
+                            {
+                                OSDiskImageEncryption osDiskImageEncryption = new OSDiskImageEncryption();
+                                if (((Hashtable)((Hashtable)t["Encryption"])["osDiskImage"]) != null)
+                                {
+                                    var osDiskEncryptionSetId = (string)((Hashtable)((Hashtable)t["Encryption"])["osDiskImage"])["DiskEncryptionSetId"];
+                                    osDiskImageEncryption.DiskEncryptionSetId = osDiskEncryptionSetId;
+
+                                    var cVMEncryptionType = (string)((Hashtable)((Hashtable)t["Encryption"])["osDiskImage"])["CVMEncryptionType"];
+                                    var cVMDiskEncryptionSetID = (string)((Hashtable)((Hashtable)t["Encryption"])["osDiskImage"])["CVMDiskEncryptionSetID"];
+                                    if (cVMEncryptionType != null || cVMDiskEncryptionSetID != null)
+                                    {
+                                        OSDiskImageSecurityProfile osDiskImageSecurityProfile = new OSDiskImageSecurityProfile(cVMEncryptionType, cVMDiskEncryptionSetID);
+                                        osDiskImageEncryption.SecurityProfile = osDiskImageSecurityProfile;
+                                    }
+
+                                }
+
+                                List<DataDiskImageEncryption> dataDiskImageEncryption = null;
+                                var dataDiskImage = (object[])((Hashtable)t["Encryption"])["dataDiskImages"];
+
+                                if (dataDiskImage != null)
+                                {
+                                    dataDiskImageEncryption = new List<DataDiskImageEncryption>();
+                                    foreach (Hashtable dataDiskEncryptionSetId in dataDiskImage)
+                                    {
+                                        DataDiskImageEncryption d = new DataDiskImageEncryption((int)dataDiskEncryptionSetId["Lun"], (string)dataDiskEncryptionSetId["DiskEncryptionSetId"]);
+                                        dataDiskImageEncryption.Add(d);
+                                    }
+                                }
+
+                                targetExtendedLocation.Encryption = new EncryptionImages(osDiskImageEncryption, dataDiskImageEncryption);
+                            }
+
+                            targetExtendedLocations.Add(targetExtendedLocation);
+                        }
+
+                        galleryImageVersion.PublishingProfile.TargetExtendedLocations = targetExtendedLocations;
+                    }
+
+                    if (this.IsParameterBound(c => c.AllowDeletionOfReplicatedLocation))
+                    {
+                        if (galleryImageVersion.PublishingProfile == null)
+                        {
+                            galleryImageVersion.SafetyProfile = new GalleryImageVersionSafetyProfile();
+                        }
+
+                        galleryImageVersion.SafetyProfile.AllowDeletionOfReplicatedLocations = this.AllowDeletionOfReplicatedLocation;
+                    }
+
+                    if (galleryImageVersion.StorageProfile != null && galleryImageVersion.StorageProfile.Source != null && galleryImageVersion.StorageProfile.Source.Id != null)
+                    {
+                        galleryImageVersion.StorageProfile.Source.Id = null;
+                    }
+
+                    galleryImageVersion.StorageProfile.DataDiskImages = null;
+                    galleryImageVersion.StorageProfile.OsDiskImage = null;
+
+                    var result = GalleryImageVersionsClient.CreateOrUpdate(resourceGroupName, galleryName, galleryImageName, galleryImageVersionName, galleryImageVersion);
+                    var psObject = new PSGalleryImageVersion();
+                    ComputeAutomationAutoMapperProfile.Mapper.Map<GalleryImageVersion, PSGalleryImageVersion>(result, psObject);
+                    WriteObject(psObject);
+                }
             });
         }
 
@@ -681,3 +997,4 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         public bool AllowDeletionOfReplicatedLocation { get; set; }
     }
 }
+
