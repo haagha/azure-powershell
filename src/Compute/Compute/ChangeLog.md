@@ -20,6 +20,13 @@
 
 -->
 ## Upcoming Release
+* Updated the `New-AzGalleryImageVersion` cmdlet to map the `SourceImageId` parameter to a new API field on the backend when a VM source is supplied.
+    - Previously, this would have been mapped to `properties.storageprofile.source.id`.
+    - The new field it should be mapped to is `properties.storageprofile.source.virtualMachineId`.
+    - Note: This should be mapped to `virtualMachineId` only when a virtual machine is supplied in the `SourceImageId` parameter. If a managed image is supplied, it should still be mapped to the same field.
+* Fixed the `Update-AzVmss` cmdlet so the `AutomaticRepairGracePeriod`, `AutomaticRepairAction`, and `EnableAutomaticRepair` parameters function correctly.
+* Updated help doc for `New-AzVM`, `New-AzVMConfig`, `New-AzVmss`, `New-AzVmssConfig`, `Update-AzVM`, and `Update-AzVmss` to include parameters that were previously added for Trusted Launch features.
+* Updated Azure.Core to 1.33.0.
 * Fixed the `Update-AzVmss` cmdlet so the `AutomaticRepairGracePeriod`, `AutomaticRepairAction`, and `EnableAutomaticRepair` parameters function correctly.
 * Updated help doc for `New-AzVM`, `New-AzVMConfig`, `New-AzVmss`, `New-AzVmssConfig`, `Update-AzVM`, and `Update-AzVmss` to include parameters that were previously added for Trusted Launch features.
 * Updated Azure.Core to 1.33.0.
