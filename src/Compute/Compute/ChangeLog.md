@@ -20,6 +20,13 @@
 
 -->
 ## Upcoming Release
+* Added new parameters to the cmdlets `Set-AzVMDataDisk` and `New-AzDiskUpdateConfig`.
+    - The new parameter `AvailabilityPolicy` of type string has been added.
+    - Possible values for `AvailabilityPolicy` are "AutomaticReattach" and "None".
+    - "AutomaticReattach" will set/update property on disk and "None" will clear property on disk.
+* Fixed the `Update-AzVmss` cmdlet so the `AutomaticRepairGracePeriod`, `AutomaticRepairAction`, and `EnableAutomaticRepair` parameters function correctly.
+* Updated help doc for `New-AzVM`, `New-AzVMConfig`, `New-AzVmss`, `New-AzVmssConfig`, `Update-AzVM`, and `Update-AzVmss` to include parameters that were previously added for Trusted Launch features.
+* Updated Azure.Core to 1.33.0.
 * Fixed the `Update-AzVmss` cmdlet so the `AutomaticRepairGracePeriod`, `AutomaticRepairAction`, and `EnableAutomaticRepair` parameters function correctly.
 * Updated help doc for `New-AzVM`, `New-AzVMConfig`, `New-AzVmss`, `New-AzVmssConfig`, `Update-AzVM`, and `Update-AzVmss` to include parameters that were previously added for Trusted Launch features.
 * Updated Azure.Core to 1.33.0.
