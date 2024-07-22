@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -83,6 +83,11 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         [PSArgumentCompleter("CrashConsistent", "FileSystemConsistent", "ApplicationConsistent")]
         public string ConsistencyMode { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "Source OS Disk Resource")]
+        public string SourceOSResource { get; set; }
 
         public override void ExecuteCmdlet()
         {
@@ -114,6 +119,11 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                         restorePoint.ExcludeDisks = disksExclude;
                     }
 
+                    if (this.IsParameterBound(c => c.SourceOSResource))
+                    {
+                        restorePoint.SourceOSResource = this.SourceOSResource;
+                    }
+
                     restorePoint.ConsistencyMode = this.ConsistencyMode;
 
                     var result = RestorePointClient.Create(resourceGroup, restorePointCollectionName, restorePointName, restorePoint);
@@ -126,3 +136,5 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         }
     }
 }
+.
+
