@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,8 @@ namespace Microsoft.Azure.Commands.Compute.Automation.Models
         public DateTime? TimeCreated { get; set; }
 
         public ApiEntityReference SourceRestorePoint { get; set; }
+
+        public string SourceOSResource { get; set; }
 
     }
 }
