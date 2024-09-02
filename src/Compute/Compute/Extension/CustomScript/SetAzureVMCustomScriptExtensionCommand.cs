@@ -1,3 +1,6 @@
+Here's the updated code with the new features implemented:
+
+```powershell
 ﻿// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
@@ -59,6 +62,9 @@ namespace Microsoft.Azure.Commands.Compute
         private const string commandToExecuteKey = "commandToExecute";
         private const string storageAccountNameKey = "storageAccountName";
         private const string storageAccountKeyKey = "storageAccountKey";
+        private const string managedIdentityKey = "managedIdentity";
+        private const string skipDos2UnixKey = "skipDos2Unix";
+        private const string scriptKey = "script";
 
 
         private const string poshCmdFormatStr = "powershell {0} -file {1} {2}";
@@ -302,6 +308,19 @@ namespace Microsoft.Azure.Commands.Compute
             HelpMessage = "Set command to execute in private config.")]
         public SwitchParameter SecureExecution { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "The managed identity to use for the extension.")]
+        [ValidateNotNullOrEmpty]
+        public Hashtable ManagedIdentity { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Skip the dos2unix conversion step for the script.")]
+        public SwitchParameter SkipDos2Unix { get; set; }
+
         public override void ExecuteCmdlet()
         {
             base.ExecuteCmdlet();
@@ -398,121 +417,48 @@ namespace Microsoft.Azure.Commands.Compute
                         publicSettings.Add(commandToExecuteKey, commandToExecute ?? "");
                     }
 
+                    if (this.ManagedIdentity != null)
+                    {
+                        var managedIdentity = new Hashtable();
+                        if (this.ManagedIdentity.ContainsKey("objectId"))
+                        {
+                            managedIdentity.Add("objectId", this.ManagedIdentity["objectId"]);
+                        }
+                        else if (this.ManagedIdentity.ContainsKey("clientId"))
+                        {
+                            managedIdentity.Add("clientId", this.ManagedIdentity["clientId"]);
+                        }
+                        else
+                        {
+                            managedIdentity = null;
+                        }
+
+                        if (managedIdentity != null)
+                        {
+                            privateSettings.Add(managedIdentityKey, managedIdentity);
+                        }
+                    }
+
+                    if (this.SkipDos2Unix.IsPresent)
+                    {
+                        if (this.ParameterSetName.Contains(WithContainerAndFileNamesParameterSet))
+                        {
+                            privateSettings.Add(skipDos2UnixKey, true);
+                        }
+                        else
+                        {
+                            WriteWarning("The SkipDos2Unix parameter can only be used with the container and file names parameter set.");
+                        }
+                    }
+
+                    if (this.ParameterSetName.Contains(WithContainerAndFileNamesParameterSet))
+                    {
+                        privateSettings.Add(scriptKey, this.Run);
+                    }
+
                     var parameters = new VirtualMachineExtension
                     {
                         Location = this.Location,
                         Publisher = VirtualMachineCustomScriptExtensionContext.ExtensionDefaultPublisher,
                         VirtualMachineExtensionType = VirtualMachineCustomScriptExtensionContext.ExtensionDefaultName,
                         TypeHandlerVersion = (this.TypeHandlerVersion) ?? VirtualMachineCustomScriptExtensionContext.ExtensionDefaultVersion,
-                        Settings = publicSettings,
-                        ProtectedSettings = privateSettings,
-                        AutoUpgradeMinorVersion = !this.DisableAutoUpgradeMinorVersion.IsPresent,
-                        ForceUpdateTag = this.ForceRerun
-                    };
-
-                    if (NoWait.IsPresent)
-                    {
-                        var op = this.VirtualMachineExtensionClient.BeginCreateOrUpdateWithHttpMessagesAsync(
-                            this.ResourceGroupName,
-                            this.VMName,
-                            this.Name,
-                            parameters).GetAwaiter().GetResult();
-                        var result = ComputeAutoMapperProfile.Mapper.Map<PSAzureOperationResponse>(op);
-                        WriteObject(result);
-                    }
-                    else
-                    {
-                        var op = this.VirtualMachineExtensionClient.CreateOrUpdateWithHttpMessagesAsync(
-                            this.ResourceGroupName,
-                            this.VMName,
-                            this.Name,
-                            parameters).GetAwaiter().GetResult();
-                        var result = ComputeAutoMapperProfile.Mapper.Map<PSAzureOperationResponse>(op);
-                        WriteObject(result);
-                    }
-                });
-            }
-        }
-
-        protected string GetStorageName()
-        {
-            return DefaultProfile.DefaultContext.Subscription.GetStorageAccount();
-        }
-
-        protected string GetStorageKey(string storageName)
-        {
-            string storageKey = string.Empty;
-
-            if (!string.IsNullOrEmpty(storageName))
-            {
-                var storageClient = AzureSession.Instance.ClientFactory.CreateArmClient<StorageManagementClient>(DefaultProfile.DefaultContext,
-                        AzureEnvironment.Endpoint.ResourceManager);
-
-                var storageAccount = storageClient.StorageAccounts.GetProperties(this.ResourceGroupName, storageName);
-
-                if (storageAccount != null)
-                {
-                    var keys = storageClient.StorageAccounts.ListKeys(this.ResourceGroupName, storageName);
-                    if (keys != null)
-                    {
-                        storageKey = keys.GetFirstAvailableKey();
-                    }
-                }
-            }
-
-            return storageKey;
-        }
-
-        protected string GetSasUrlStr(string storageName, string storageKey, string containerName, string blobName)
-        {
-            var storageClient = AzureSession.Instance.ClientFactory.CreateArmClient<StorageManagementClient>(DefaultProfile.DefaultContext,
-                        AzureEnvironment.Endpoint.ResourceManager);
-            var cred = new StorageCredentials(storageName, storageKey);
-            var storageAccount = string.IsNullOrEmpty(this.StorageEndpointSuffix)
-                               ? new CloudStorageAccount(cred, true)
-                               : new CloudStorageAccount(cred, this.StorageEndpointSuffix, true);
-
-            var blobClient = storageAccount.CreateCloudBlobClient();
-            var container = blobClient.GetContainerReference(containerName);
-            var cloudBlob = container.GetBlockBlobReference(blobName);
-            var sasToken = cloudBlob.GetSharedAccessSignature(
-                new SharedAccessBlobPolicy()
-                {
-                    SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24.0),
-                    Permissions = SharedAccessBlobPermissions.Read
-                });
-
-            // Try not to use a Uri object in order to keep the following
-            // special characters in the SAS signature section:
-            //     '+'   ->   '%2B'
-            //     '/'   ->   '%2F'
-            //     '='   ->   '%3D'
-            return cloudBlob.Uri + sasToken;
-        }
-
-        protected Hashtable GetPrivateConfiguration()
-        {
-            if (string.IsNullOrEmpty(this.StorageAccountName) && string.IsNullOrEmpty(this.StorageAccountKey) && this.FileUri == null)
-            {
-                return null;
-            }
-            else
-            {
-                var privateSettings = new Hashtable();
-                if (!string.IsNullOrEmpty(this.StorageAccountName))
-                {
-                    privateSettings.Add(storageAccountNameKey, StorageAccountName);
-                }
-                if (!string.IsNullOrEmpty(this.StorageAccountKey))
-                {
-                    privateSettings.Add(storageAccountKeyKey, StorageAccountKey);
-                }
-                if (this.FileUri != null)
-                {
-                    privateSettings.Add(fileUrisKey, this.FileUri);
-                }
-                return privateSettings;
-            }
-        }
-    }
-}
