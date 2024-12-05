@@ -14,7 +14,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
     public partial class EventGrid
     {
 
-        /// <summary>Update a CA certificate with the specified parameters.</summary>
+        /// <summary>update a CA certificate with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -67,7 +67,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a CA certificate with the specified parameters.</summary>
+        /// <summary>update a CA certificate with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">CA certificate information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -129,7 +129,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a CA certificate with the specified parameters.</summary>
+        /// <summary>update a CA certificate with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">CA certificate information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -189,7 +189,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a CA certificate with the specified parameters.</summary>
+        /// <summary>update a CA certificate with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -241,7 +241,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a CA certificate with the specified parameters.</summary>
+        /// <summary>update a CA certificate with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -291,7 +291,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a CA certificate with the specified parameters.</summary>
+        /// <summary>update a CA certificate with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -369,6 +369,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -381,7 +382,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -519,6 +523,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -531,7 +536,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -797,6 +805,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -809,7 +818,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -1669,7 +1681,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously creates or updates a new channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a new channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -1723,7 +1735,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously creates or updates a new channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a new channel with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Channel information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -1786,7 +1798,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously creates or updates a new channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a new channel with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Channel information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -1846,7 +1858,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously creates or updates a new channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a new channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -1899,7 +1911,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously creates or updates a new channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a new channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -1949,7 +1961,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously creates or updates a new channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a new channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -2271,6 +2283,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -2283,7 +2296,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -3432,7 +3448,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -3485,7 +3501,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a channel with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Channel update information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -3547,7 +3563,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a channel with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Channel update information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -3607,7 +3623,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -3659,7 +3675,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -3709,7 +3725,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a channel with the specified parameters.</summary>
+        /// <summary>Synchronously update a channel with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the partners subscription.</param>
@@ -3884,7 +3900,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client group with the specified parameters.</summary>
+        /// <summary>update a client group with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -3937,7 +3953,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client group with the specified parameters.</summary>
+        /// <summary>update a client group with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Client group information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -3999,7 +4015,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client group with the specified parameters.</summary>
+        /// <summary>update a client group with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Client group information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -4059,7 +4075,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client group with the specified parameters.</summary>
+        /// <summary>update a client group with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -4111,7 +4127,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client group with the specified parameters.</summary>
+        /// <summary>update a client group with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -4161,7 +4177,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client group with the specified parameters.</summary>
+        /// <summary>update a client group with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -4239,6 +4255,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -4251,7 +4268,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -4389,6 +4409,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -4401,7 +4422,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -4667,6 +4691,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -4679,7 +4704,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -5539,7 +5567,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client with the specified parameters.</summary>
+        /// <summary>update a client with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -5592,7 +5620,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client with the specified parameters.</summary>
+        /// <summary>update a client with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Client information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -5654,7 +5682,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client with the specified parameters.</summary>
+        /// <summary>update a client with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Client information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -5714,7 +5742,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client with the specified parameters.</summary>
+        /// <summary>update a client with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -5766,7 +5794,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client with the specified parameters.</summary>
+        /// <summary>update a client with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -5816,7 +5844,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a client with the specified parameters.</summary>
+        /// <summary>update a client with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -5892,6 +5920,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -5904,7 +5933,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -6042,6 +6074,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -6054,7 +6087,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -6320,6 +6356,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -6332,7 +6369,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -7191,7 +7231,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -7247,7 +7287,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -7311,7 +7351,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -7373,7 +7413,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -7428,7 +7468,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -7481,7 +7521,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -7561,6 +7601,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -7573,7 +7614,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -7703,6 +7747,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -7715,7 +7760,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -7980,6 +8028,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -7992,7 +8041,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -9480,7 +9532,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -9533,7 +9585,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -9595,7 +9647,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -9655,7 +9707,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -9707,7 +9759,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -9757,7 +9809,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -9835,6 +9887,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -9847,7 +9900,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -9975,6 +10031,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -9987,7 +10044,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -10117,7 +10177,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -10176,7 +10236,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -10243,7 +10303,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -10308,7 +10368,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -10366,7 +10426,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -10422,7 +10482,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -10505,6 +10565,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -10517,7 +10578,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -10647,6 +10711,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -10659,7 +10724,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -10934,6 +11002,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -10946,7 +11015,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -12499,7 +12571,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a domain topic.</summary>
+        /// <summary>update an existing event subscription for a domain topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -12555,7 +12627,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a domain topic.</summary>
+        /// <summary>update an existing event subscription for a domain topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -12620,7 +12692,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a domain topic.</summary>
+        /// <summary>update an existing event subscription for a domain topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -12683,7 +12755,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a domain topic.</summary>
+        /// <summary>update an existing event subscription for a domain topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -12738,7 +12810,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a domain topic.</summary>
+        /// <summary>update an existing event subscription for a domain topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -12791,7 +12863,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a domain topic.</summary>
+        /// <summary>update an existing event subscription for a domain topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -12872,6 +12944,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -12884,7 +12957,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -13014,6 +13090,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -13026,7 +13103,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -13157,9 +13237,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new domain topic with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new domain topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -13206,9 +13284,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new domain topic with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new domain topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
         /// <param name="onDefault">a delegate that is called when the remote service returns default (any response code not handled
@@ -13264,9 +13340,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new domain topic with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new domain topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
         /// <param name="sender">an instance of an Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.ISendAsync pipeline to use to make the request.</param>
@@ -13320,9 +13394,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new domain topic with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new domain topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -13394,6 +13466,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -13406,7 +13479,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -13534,6 +13610,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -13546,7 +13623,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -13806,6 +13886,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -13818,7 +13899,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -14638,7 +14722,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates or updates a new domain with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new domain with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -14688,7 +14772,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates or updates a new domain with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new domain with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Domain information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -14747,7 +14831,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates or updates a new domain with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new domain with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Domain information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -14804,7 +14888,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates or updates a new domain with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new domain with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -14853,7 +14937,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates or updates a new domain with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new domain with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -14900,7 +14984,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates or updates a new domain with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new domain with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -14973,6 +15057,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -14985,7 +15070,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -15113,6 +15201,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -15125,7 +15214,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -15380,6 +15472,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -15392,7 +15485,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -17611,6 +17707,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -17623,7 +17720,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -17751,6 +17851,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -17763,7 +17864,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -17891,7 +17995,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription based on the specified scope.
+        /// Asynchronously update a new event subscription or update an existing event subscription based on the specified scope.
         /// </summary>
         /// <param name="scope">The identifier of the resource to which the event subscription needs to be created or updated. The
         /// scope can be a subscription, or a resource group, or a top level resource belonging to a resource provider namespace,
@@ -17945,7 +18049,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription based on the specified scope.
+        /// Asynchronously update a new event subscription or update an existing event subscription based on the specified scope.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -18003,7 +18107,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription based on the specified scope.
+        /// Asynchronously update a new event subscription or update an existing event subscription based on the specified scope.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -18059,7 +18163,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription based on the specified scope.
+        /// Asynchronously update a new event subscription or update an existing event subscription based on the specified scope.
         /// </summary>
         /// <param name="scope">The identifier of the resource to which the event subscription needs to be created or updated. The
         /// scope can be a subscription, or a resource group, or a top level resource belonging to a resource provider namespace,
@@ -18112,7 +18216,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription based on the specified scope.
+        /// Asynchronously update a new event subscription or update an existing event subscription based on the specified scope.
         /// </summary>
         /// <param name="scope">The identifier of the resource to which the event subscription needs to be created or updated. The
         /// scope can be a subscription, or a resource group, or a top level resource belonging to a resource provider namespace,
@@ -18163,7 +18267,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription based on the specified scope.
+        /// Asynchronously update a new event subscription or update an existing event subscription based on the specified scope.
         /// </summary>
         /// <param name="scope">The identifier of the resource to which the event subscription needs to be created or updated. The
         /// scope can be a subscription, or a resource group, or a top level resource belonging to a resource provider namespace,
@@ -18241,6 +18345,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -18253,7 +18358,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -18381,6 +18489,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -18393,7 +18502,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -18648,6 +18760,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -18660,7 +18773,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -23467,7 +23583,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates an existing event subscription.</summary>
+        /// <summary>Asynchronously update an existing event subscription.</summary>
         /// <param name="scope">The scope of existing event subscription. The scope can be a subscription, or a resource group, or
         /// a top level resource belonging to a resource provider namespace, or an EventGrid topic. For example, use '/subscriptions/{subscriptionId}/'
         /// for a subscription, '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}' for a resource group, and '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}'
@@ -23517,7 +23633,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates an existing event subscription.</summary>
+        /// <summary>Asynchronously update an existing event subscription.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -23573,7 +23689,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates an existing event subscription.</summary>
+        /// <summary>Asynchronously update an existing event subscription.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -23627,7 +23743,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates an existing event subscription.</summary>
+        /// <summary>Asynchronously update an existing event subscription.</summary>
         /// <param name="scope">The scope of existing event subscription. The scope can be a subscription, or a resource group, or
         /// a top level resource belonging to a resource provider namespace, or an EventGrid topic. For example, use '/subscriptions/{subscriptionId}/'
         /// for a subscription, '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}' for a resource group, and '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}'
@@ -23676,7 +23792,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates an existing event subscription.</summary>
+        /// <summary>Asynchronously update an existing event subscription.</summary>
         /// <param name="scope">The scope of existing event subscription. The scope can be a subscription, or a resource group, or
         /// a top level resource belonging to a resource provider namespace, or an EventGrid topic. For example, use '/subscriptions/{subscriptionId}/'
         /// for a subscription, '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}' for a resource group, and '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}'
@@ -23723,7 +23839,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates an existing event subscription.</summary>
+        /// <summary>Asynchronously update an existing event subscription.</summary>
         /// <param name="scope">The scope of existing event subscription. The scope can be a subscription, or a resource group, or
         /// a top level resource belonging to a resource provider namespace, or an EventGrid topic. For example, use '/subscriptions/{subscriptionId}/'
         /// for a subscription, '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}' for a resource group, and '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}'
@@ -23796,6 +23912,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -23808,7 +23925,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -23936,6 +24056,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -23948,7 +24069,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -24368,8 +24492,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a namespace topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a namespace topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -24428,8 +24552,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a namespace topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a namespace topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the delivery mode, filter information, and others.</param>
@@ -24496,8 +24620,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a namespace topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a namespace topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the delivery mode, filter information, and others.</param>
@@ -24562,8 +24686,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a namespace topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a namespace topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -24621,8 +24745,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a namespace topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a namespace topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -24678,8 +24802,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a namespace topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a namespace topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -24762,6 +24886,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -24774,7 +24899,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -24914,6 +25042,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -24926,7 +25055,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -25207,6 +25339,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -25219,7 +25352,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -26128,7 +26264,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a namespace topic.</summary>
+        /// <summary>update an existing event subscription of a namespace topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -26185,7 +26321,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a namespace topic.</summary>
+        /// <summary>update an existing event subscription of a namespace topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -26250,7 +26386,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a namespace topic.</summary>
+        /// <summary>update an existing event subscription of a namespace topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -26313,7 +26449,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a namespace topic.</summary>
+        /// <summary>update an existing event subscription of a namespace topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -26369,7 +26505,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a namespace topic.</summary>
+        /// <summary>update an existing event subscription of a namespace topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -26423,7 +26559,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a namespace topic.</summary>
+        /// <summary>update an existing event subscription of a namespace topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -26505,6 +26641,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -26517,7 +26654,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -26657,6 +26797,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -26669,7 +26810,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -26807,7 +26951,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -26860,7 +27004,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new namespace topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Namespace topic information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -26922,7 +27066,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new namespace topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Namespace topic information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -26982,7 +27126,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -27034,7 +27178,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -27084,7 +27228,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -27162,6 +27306,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -27174,7 +27319,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -27312,6 +27460,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -27324,7 +27473,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -27590,6 +27742,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -27602,7 +27755,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -29174,6 +29330,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -29186,7 +29343,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -29325,6 +29485,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -29337,7 +29498,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -29469,7 +29633,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -29522,7 +29686,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a namespace topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Namespace topic update information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -29584,7 +29748,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a namespace topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Namespace topic update information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -29644,7 +29808,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -29696,7 +29860,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -29746,7 +29910,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a namespace topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a namespace topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -29822,6 +29986,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -29834,7 +29999,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -29972,6 +30140,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -29984,7 +30153,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -30116,9 +30288,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new namespace with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -30168,9 +30338,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new namespace with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new namespace with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Namespace information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -30229,9 +30397,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new namespace with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new namespace with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Namespace information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -30288,9 +30454,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new namespace with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -30339,9 +30503,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new namespace with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -30388,9 +30550,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Asynchronously creates or updates a new namespace with the specified parameters.
-        /// </summary>
+        /// <summary>Asynchronously update a new namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -30463,6 +30623,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -30475,7 +30636,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -30613,6 +30777,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -30625,7 +30790,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -30880,6 +31048,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -30892,7 +31061,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -32738,6 +32910,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -32750,7 +32923,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -32889,6 +33065,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -32901,7 +33078,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -33363,6 +33543,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -33375,7 +33556,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -33513,6 +33697,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -33525,7 +33710,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -34363,9 +34551,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Synchronously creates or updates a partner configuration with the specified parameters.
-        /// </summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -34413,9 +34599,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Synchronously creates or updates a partner configuration with the specified parameters.
-        /// </summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner configuration information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -34472,9 +34656,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Synchronously creates or updates a partner configuration with the specified parameters.
-        /// </summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner configuration information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -34529,9 +34711,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Synchronously creates or updates a partner configuration with the specified parameters.
-        /// </summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -34578,9 +34758,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Synchronously creates or updates a partner configuration with the specified parameters.
-        /// </summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -34625,9 +34803,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>
-        /// Synchronously creates or updates a partner configuration with the specified parameters.
-        /// </summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -34700,6 +34876,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -34712,7 +34889,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -34842,6 +35022,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -34854,7 +35035,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -35103,6 +35287,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -35115,7 +35300,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -36620,7 +36808,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a partner configuration with the specified parameters.</summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -36668,7 +36856,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a partner configuration with the specified parameters.</summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner configuration update information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -36725,7 +36913,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a partner configuration with the specified parameters.</summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner configuration update information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -36780,7 +36968,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a partner configuration with the specified parameters.</summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -36827,7 +37015,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a partner configuration with the specified parameters.</summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -36872,7 +37060,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Synchronously updates a partner configuration with the specified parameters.</summary>
+        /// <summary>Synchronously update a partner configuration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -36945,6 +37133,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -36957,7 +37146,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -37085,6 +37277,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -37097,7 +37290,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -37553,7 +37749,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -37603,7 +37799,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner destination with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner destination create information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -37662,7 +37858,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner destination with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner destination create information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -37719,7 +37915,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -37768,7 +37964,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -37815,7 +38011,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -37890,6 +38086,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -37902,7 +38099,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -38040,6 +38240,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -38052,7 +38253,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -38307,6 +38511,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -38319,7 +38524,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -39496,7 +39704,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -39546,7 +39754,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner destination with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner destination update information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -39605,7 +39813,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner destination with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner destination update information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -39662,7 +39870,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -39711,7 +39919,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -39758,7 +39966,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner destination with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner destination with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -39833,6 +40041,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -39845,7 +40054,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -39983,6 +40195,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -39995,7 +40208,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -40122,7 +40338,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -40172,7 +40388,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner namespace with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">PartnerNamespace information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -40231,7 +40447,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner namespace with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">PartnerNamespace information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -40288,7 +40504,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -40337,7 +40553,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -40384,7 +40600,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -40459,6 +40675,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -40471,7 +40688,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -40599,6 +40819,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -40611,7 +40832,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -40866,6 +41090,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -40878,7 +41103,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -42783,7 +43011,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -42833,7 +43061,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner namespace with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner namespace update information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -42892,7 +43120,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously updates a partner namespace with the specified parameters.</summary>
+        /// <summary>Asynchronously update a partner namespace with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -42968,6 +43196,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -42980,7 +43209,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -43107,7 +43339,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a new partner registration with the specified parameters.</summary>
+        /// <summary>update a new partner registration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -43157,7 +43389,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a new partner registration with the specified parameters.</summary>
+        /// <summary>update a new partner registration with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">PartnerRegistration information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -43216,7 +43448,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a new partner registration with the specified parameters.</summary>
+        /// <summary>update a new partner registration with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">PartnerRegistration information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -43273,7 +43505,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a new partner registration with the specified parameters.</summary>
+        /// <summary>update a new partner registration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -43322,7 +43554,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a new partner registration with the specified parameters.</summary>
+        /// <summary>update a new partner registration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -43369,7 +43601,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a new partner registration with the specified parameters.</summary>
+        /// <summary>update a new partner registration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -43444,6 +43676,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -43456,7 +43689,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -43584,6 +43820,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -43596,7 +43833,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -43851,6 +44091,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -43863,7 +44104,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -44998,7 +45242,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a partner registration with the specified parameters.</summary>
+        /// <summary>update a partner registration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -45048,7 +45292,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a partner registration with the specified parameters.</summary>
+        /// <summary>update a partner registration with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner registration update information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -45107,7 +45351,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a partner registration with the specified parameters.</summary>
+        /// <summary>update a partner registration with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -45183,6 +45427,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -45195,7 +45440,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -45323,8 +45571,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a partner topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a partner topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -45380,8 +45628,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a partner topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a partner topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -45445,8 +45693,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a partner topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a partner topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -45508,8 +45756,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a partner topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a partner topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -45564,8 +45812,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a partner topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a partner topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -45618,8 +45866,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription of a partner topic with the specified parameters. Existing event
-        /// subscriptions will be updated with this API.
+        /// Asynchronously update an event subscription of a partner topic with the specified parameters. Existing event subscriptions
+        /// will be updated with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -45699,6 +45947,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -45711,7 +45960,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -45841,6 +46093,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -45853,7 +46106,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -46120,6 +46376,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -46132,7 +46389,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -47630,7 +47890,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a partner topic.</summary>
+        /// <summary>update an existing event subscription of a partner topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -47684,7 +47944,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a partner topic.</summary>
+        /// <summary>update an existing event subscription of a partner topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -47746,7 +48006,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a partner topic.</summary>
+        /// <summary>update an existing event subscription of a partner topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -47806,7 +48066,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a partner topic.</summary>
+        /// <summary>update an existing event subscription of a partner topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -47859,7 +48119,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a partner topic.</summary>
+        /// <summary>update an existing event subscription of a partner topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -47910,7 +48170,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a partner topic.</summary>
+        /// <summary>update an existing event subscription of a partner topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -47989,6 +48249,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -48001,7 +48262,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -48131,6 +48395,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -48143,7 +48408,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -48586,7 +48854,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -48637,7 +48905,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner Topic information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -48697,7 +48965,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Partner Topic information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -48754,7 +49022,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -48804,7 +49072,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -48851,7 +49119,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new partner topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new partner topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -49477,6 +49745,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -49489,7 +49758,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -51068,7 +51340,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a permission binding with the specified parameters.</summary>
+        /// <summary>update a permission binding with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -51121,7 +51393,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a permission binding with the specified parameters.</summary>
+        /// <summary>update a permission binding with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Permission binding information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -51183,7 +51455,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a permission binding with the specified parameters.</summary>
+        /// <summary>update a permission binding with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Permission binding information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -51243,7 +51515,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a permission binding with the specified parameters.</summary>
+        /// <summary>update a permission binding with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -51295,7 +51567,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a permission binding with the specified parameters.</summary>
+        /// <summary>update a permission binding with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -51345,7 +51617,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a permission binding with the specified parameters.</summary>
+        /// <summary>update a permission binding with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -51423,6 +51695,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -51435,7 +51708,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -51573,6 +51849,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -51585,7 +51862,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -51851,6 +52131,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -51863,7 +52144,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -52869,6 +53153,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -52881,7 +53166,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -53768,7 +54056,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Update a specific private endpoint connection under a topic, domain or partner namespace.
+        /// update a specific private endpoint connection under a topic, domain or partner namespace.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -53828,7 +54116,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Update a specific private endpoint connection under a topic, domain or partner namespace.
+        /// update a specific private endpoint connection under a topic, domain or partner namespace.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">The private endpoint connection object to update.</param>
@@ -53895,7 +54183,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Update a specific private endpoint connection under a topic, domain or partner namespace.
+        /// update a specific private endpoint connection under a topic, domain or partner namespace.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">The private endpoint connection object to update.</param>
@@ -53960,7 +54248,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Update a specific private endpoint connection under a topic, domain or partner namespace.
+        /// update a specific private endpoint connection under a topic, domain or partner namespace.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -54019,7 +54307,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Update a specific private endpoint connection under a topic, domain or partner namespace.
+        /// update a specific private endpoint connection under a topic, domain or partner namespace.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -54076,7 +54364,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Update a specific private endpoint connection under a topic, domain or partner namespace.
+        /// update a specific private endpoint connection under a topic, domain or partner namespace.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -54160,6 +54448,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -54172,7 +54461,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -54300,6 +54592,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -54312,7 +54605,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -55187,8 +55483,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription with the specified parameters. Existing event subscriptions will
-        /// be updated with this API.
+        /// Asynchronously update an event subscription with the specified parameters. Existing event subscriptions will be updated
+        /// with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -55244,8 +55540,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription with the specified parameters. Existing event subscriptions will
-        /// be updated with this API.
+        /// Asynchronously update an event subscription with the specified parameters. Existing event subscriptions will be updated
+        /// with this API.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -55309,8 +55605,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription with the specified parameters. Existing event subscriptions will
-        /// be updated with this API.
+        /// Asynchronously update an event subscription with the specified parameters. Existing event subscriptions will be updated
+        /// with this API.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -55372,8 +55668,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription with the specified parameters. Existing event subscriptions will
-        /// be updated with this API.
+        /// Asynchronously update an event subscription with the specified parameters. Existing event subscriptions will be updated
+        /// with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -55428,8 +55724,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription with the specified parameters. Existing event subscriptions will
-        /// be updated with this API.
+        /// Asynchronously update an event subscription with the specified parameters. Existing event subscriptions will be updated
+        /// with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -55482,8 +55778,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates or updates an event subscription with the specified parameters. Existing event subscriptions will
-        /// be updated with this API.
+        /// Asynchronously update an event subscription with the specified parameters. Existing event subscriptions will be updated
+        /// with this API.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -55563,6 +55859,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -55575,7 +55872,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -55705,6 +56005,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -55717,7 +56018,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -55984,6 +56288,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -55996,7 +56301,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -57494,7 +57802,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a system topic.</summary>
+        /// <summary>update an existing event subscription of a system topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -57548,7 +57856,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a system topic.</summary>
+        /// <summary>update an existing event subscription of a system topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -57610,7 +57918,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a system topic.</summary>
+        /// <summary>update an existing event subscription of a system topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -57670,7 +57978,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a system topic.</summary>
+        /// <summary>update an existing event subscription of a system topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -57723,7 +58031,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a system topic.</summary>
+        /// <summary>update an existing event subscription of a system topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -57774,7 +58082,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription of a system topic.</summary>
+        /// <summary>update an existing event subscription of a system topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -57853,6 +58161,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -57865,7 +58174,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -57995,6 +58307,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -58007,7 +58320,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -58137,7 +58453,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new system topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new system topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -58187,7 +58503,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new system topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new system topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">System Topic information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -58246,7 +58562,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new system topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new system topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">System Topic information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -58303,7 +58619,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new system topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new system topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -58352,7 +58668,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new system topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new system topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -58399,7 +58715,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new system topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new system topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -58474,6 +58790,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -58486,7 +58803,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -58614,6 +58934,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -58626,7 +58947,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -58881,6 +59205,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -58893,7 +59218,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -60359,6 +60687,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -60371,7 +60700,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -60499,6 +60831,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -60511,7 +60844,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -60639,7 +60975,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -60695,7 +61031,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -60759,7 +61095,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Event subscription properties containing the destination and filter information.</param>
@@ -60821,7 +61157,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -60876,7 +61212,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -60929,7 +61265,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
         }
 
         /// <summary>
-        /// Asynchronously creates a new event subscription or updates an existing event subscription.
+        /// Asynchronously update a new event subscription or update an existing event subscription.
         /// </summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
@@ -61009,6 +61345,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -61021,7 +61358,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -61151,6 +61491,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -61163,7 +61504,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -61428,6 +61772,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -61440,7 +61785,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -62928,7 +63276,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -62981,7 +63329,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -63043,7 +63391,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Updated event subscription information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -63103,7 +63451,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -63155,7 +63503,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -63205,7 +63553,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update an existing event subscription for a topic.</summary>
+        /// <summary>update an existing event subscription for a topic.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -63283,6 +63631,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -63295,7 +63644,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -63423,6 +63775,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -63435,7 +63788,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -63564,7 +63920,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a topic space with the specified parameters.</summary>
+        /// <summary>update a topic space with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -63617,7 +63973,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a topic space with the specified parameters.</summary>
+        /// <summary>update a topic space with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Topic space information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -63679,7 +64035,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a topic space with the specified parameters.</summary>
+        /// <summary>update a topic space with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Topic space information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -63739,7 +64095,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a topic space with the specified parameters.</summary>
+        /// <summary>update a topic space with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -63791,7 +64147,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a topic space with the specified parameters.</summary>
+        /// <summary>update a topic space with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -63841,7 +64197,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Update a topic space with the specified parameters.</summary>
+        /// <summary>update a topic space with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -63919,6 +64275,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -63931,7 +64288,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -64069,6 +64429,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: azure-async-operation
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -64081,7 +64442,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -64347,6 +64711,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -64359,7 +64724,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -66048,7 +66416,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -66098,7 +66466,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Topic information.</param>
         /// <param name="onOk">a delegate that is called when the remote service returns 200 (OK).</param>
@@ -66157,7 +66525,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new topic with the specified parameters.</summary>
         /// <param name="viaIdentity"></param>
         /// <param name="body">Topic information.</param>
         /// <param name="eventListener">an <see cref="Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.IEventListener" /> instance that will receive events.</param>
@@ -66214,7 +66582,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -66263,7 +66631,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -66310,7 +66678,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
             }
         }
 
-        /// <summary>Asynchronously creates a new topic with the specified parameters.</summary>
+        /// <summary>Asynchronously update a new topic with the specified parameters.</summary>
         /// <param name="subscriptionId">Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription
         /// ID forms part of the URI for every service call.</param>
         /// <param name="resourceGroupName">The name of the resource group within the user's subscription.</param>
@@ -66383,6 +66751,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -66395,7 +66764,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -66523,6 +66895,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -66535,7 +66908,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -66790,6 +67166,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -66802,7 +67179,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -68929,6 +69309,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -68941,7 +69322,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -69070,6 +69454,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     var _finalUri = _response.GetFirstHeader(@"Location");
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -69082,7 +69467,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener
@@ -69394,6 +69782,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                     // declared final-state-via: default
                     var asyncOperation = _response.GetFirstHeader(@"Azure-AsyncOperation");
                     var location = _response.GetFirstHeader(@"Location");
+                    var operationLocation = _response.GetFirstHeader(@"Operation-Location");
                     while (request.Method == System.Net.Http.HttpMethod.Put && _response.StatusCode == global::System.Net.HttpStatusCode.OK || _response.StatusCode == global::System.Net.HttpStatusCode.Created || _response.StatusCode == global::System.Net.HttpStatusCode.Accepted )
                     {
                         // delay before making the next polling request
@@ -69406,7 +69795,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.EventGrid
                         if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Location"))) {
                             location = _response.GetFirstHeader(@"Location");
                         }
-                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? _originalUri : location : asyncOperation;
+                        if (!global::System.String.IsNullOrEmpty(_response.GetFirstHeader(@"Operation-Location"))) {
+                            operationLocation = _response.GetFirstHeader(@"Operation-Location");
+                        }
+                        var _uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? global::System.String.IsNullOrEmpty(operationLocation) ? _originalUri : operationLocation : location : asyncOperation;
                         request = request.CloneAndDispose(new global::System.Uri(_uri), Microsoft.Azure.PowerShell.Cmdlets.EventGrid.Runtime.Method.Get);
 
                         // and let's look at the current response body and see if we have some information we can give back to the listener

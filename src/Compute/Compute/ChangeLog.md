@@ -20,6 +20,38 @@
 
 -->
 ## Upcoming Release
+* Added new optional parameters to `Update-AzVmss`, `Set-AzVmss`, `Update-AzAvailabilitySet`, `Set-AzAvailabilitySet`, `Update-AzVM`, and `Set-AzVM` cmdlets.
+    - `ScheduledEventsAdditionalEndpoints`: Allows events to be delivered to additional endpoints like event grid and Azure resource graph.
+    - `EnableUserRebootScheduledEvents`: Enables delivery of events for user-initiated reboots of the VM.
+    - `EnableUserRedeployScheduledEvents`: Enables delivery of events for user-initiated redeploys of the VM.
+* Upgraded Azure.Core to 1.44.1.
+* Upgraded Azure.Core to 1.44.1.
+
+## Version 9.0.0
+* Made `-PublicIpSku` parameter Standard by default in `New-AzVM`
+
+## Version 8.5.0
+* Added optional parameters `-SecurityPostureId` and `-SecurityPostureExcludeExtension` to cmdlets `New-AzVmss` and `New-AzVmssConfig`.
+* Updated image aliases to be up-to-date in the azure-powershell\src\Compute\Strategies\ComputeRp\Images.json file.
+* Added `NvmeDisk` argument completer to `DiffDiskPlacement` parameter for `Set-AzVMOSDisk` and `Set-AzVmssStorageProfile` cmdlets, allowing options for disk placement as `CacheDisk`, `ResourceDisk`, or `NvmeDisk`.
+
+## Version 8.4.0
+* Added `SkuProfileVmSize` and `SkuProfileAllocationStrategy` parameters to `New-AzVmss`, `New-AzVmssConfig`, and `Update-AzVmss` cmdlets for VMSS Instance Mix operations.
+* Added a new optional parameter `-GenerateSshKey-type` to the `New-AzVM` cmdlet, allowing users to specify the type of SSH key to generate (Ed25519 or RSA).
+* Added cx waning to the `New-AzVM` cmdlet, The default value of `publicIpSku` parameter will be changed from Basic to Standard.
+* Added `EnableResilientVMCreate` and `EnableResilientVMDelete` parameters to `Update-AzVmss` and `New-AzVmssConfig` cmdlets for enhanced VM resilience options.
+* Added `IsVMInStandByPool` property to `PSVirtualMachineInstanceView` object. [#25736]
+
+## Version 8.3.0
+* Fixed secrets exposure in example documentation.
+* References are updated to use 2024-07-01 ComputeRP and 2024-03-02 DiskRP REST API calls.
+* Added information on how to find VM Images when using `New-AzVM` with `-Image` parameter.
+* Added `TimeCreated` read-only field to `PSVirtualMachineScaleSetVMProfile` object.
+* Added parameter `-ResourceIdsOnly` to `Get-AzCapacityReservationGroup` cmdlet.
+* Changed the `Set-AzVMOperatingSystem` cmdlet when the `-VM` parameter is used without an OSProfile. Now it will not throw a null reference exception when `-Credential` is not provided.
+* Added parameter `-ForceDetach` to `Remove-AzVMDataDisk` cmdlet.
+
+## Version 8.2.0
 * Renamed parameter `-VmId` to `-SourceId` and added `-VmId` as an alias to `New-AzRestorePointCollection` cmdlet.
 
 ## Version 8.1.0

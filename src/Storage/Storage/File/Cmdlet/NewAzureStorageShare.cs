@@ -15,10 +15,8 @@
 namespace Microsoft.WindowsAzure.Commands.Storage.File.Cmdlet
 {
     using System.Management.Automation;
-    using Azure.Storage.File;
     using global::Azure.Storage.Files.Shares;
     using global::Azure.Storage.Files.Shares.Models;
-    using Microsoft.WindowsAzure.Commands.Common.CustomAttributes;
     using Microsoft.WindowsAzure.Commands.Common.Storage.ResourceModel;
     using Microsoft.WindowsAzure.Commands.Storage.Common;
 

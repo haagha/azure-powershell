@@ -5313,3 +5313,438 @@ function Test-VirtualMachineScaleSetDefaultImgWhenStandard
         Clean-ResourceGroup $rgname;
     }
 }
+
+<#
+.SYNOPSIS
+Test Virtual Machine Scale Set with SkuProfile
+#>
+function Test-VirtualMachineScaleSetSkuProfile
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName
+    $loc = "eastus2";
+
+    # Basic case
+    try
+    {
+        # Common
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        $vmssName = 'vs' + $rgname;
+
+        $domainNameLabel1 = "d1" + $rgname;
+        $enable = $true;
+        $adminUsername = Get-ComputeTestResourceName;
+        $password = Get-PasswordForVM;
+        $adminPassword = $password | ConvertTo-SecureString -AsPlainText -Force;
+        $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword);
+
+        $vmss = New-AzVmss -ResourceGroupName $rgname -Credential $cred -VMScaleSetName $vmssName -DomainNameLabel $domainNameLabel1 `
+            -VMSize "Mix" -SkuProfileVmSize @("Standard_D4s_v3", "Standard_D4s_v4");
+        
+        Assert-AreEqual $vmss.OrchestrationMode "Flexible";
+        Assert-AreEqual $vmss.Sku.Name "Mix";
+        Assert-AreEqual $vmss.SkuProfile.AllocationStrategy "LowestPrice";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[0].Name "Standard_D4s_v3";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[1].Name "Standard_D4s_v4";
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname
+    }
+
+    # Changing allocation strategy
+    try
+    {
+        # Common
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        $vmssName = 'vs' + $rgname;
+
+        $domainNameLabel1 = "d1" + $rgname;
+        $enable = $true;
+        $adminUsername = Get-ComputeTestResourceName;
+        $password = Get-PasswordForVM;
+        $adminPassword = $password | ConvertTo-SecureString -AsPlainText -Force;
+        $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword);
+
+        $vmss = New-AzVmss -ResourceGroupName $rgname -Credential $cred -VMScaleSetName $vmssName -DomainNameLabel $domainNameLabel1 `
+            -SkuProfileVmSize @("Standard_D4s_v3", "Standard_D4s_v4") -SkuProfileAllocationStrategy "CapacityOptimized";
+        
+        Assert-AreEqual $vmss.OrchestrationMode "Flexible";
+        Assert-AreEqual $vmss.Sku.Name "Mix";
+        Assert-AreEqual $vmss.SkuProfile.AllocationStrategy "CapacityOptimized";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[0].Name "Standard_D4s_v3";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[1].Name "Standard_D4s_v4";
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname
+    }
+
+    # With azvmss config and update
+    try
+    {
+        # Common
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        $vmssName = 'vs' + $rgname;
+
+        $domainNameLabel1 = "d1" + $rgname;
+        $enable = $true;
+        $adminUsername = Get-ComputeTestResourceName;
+        $password = Get-PasswordForVM;
+        $adminPassword = $password | ConvertTo-SecureString -AsPlainText -Force;
+        $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword);
+
+        $vmss = New-AzVmssConfig -Location $loc -Zone "1" -SkuCapacity 2 -SkuName 'Mix' -SkuProfileVmSize @("Standard_D4s_v3", "Standard_D4s_v4");
+        
+        Assert-AreEqual $vmss.Sku.Name "Mix";
+        Assert-AreEqual $vmss.SkuProfile.AllocationStrategy "LowestPrice";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[0].Name "Standard_D4s_v3";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[1].Name "Standard_D4s_v4";
+
+        $vmss = New-AzVmssConfig -Location $loc -Zone "1" -SkuCapacity 2 -SkuProfileVmSize @("Standard_D4s_v3", "Standard_D4s_v4") -SkuProfileAllocationStrategy "CapacityOptimized";
+        
+        Assert-AreEqual $vmss.Sku.Name "Mix";
+        Assert-AreEqual $vmss.SkuProfile.AllocationStrategy "CapacityOptimized";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[0].Name "Standard_D4s_v3";
+        Assert-AreEqual $vmss.SkuProfile.VMSizes[1].Name "Standard_D4s_v4";
+
+        $stnd = "Standard";
+        $ipName = Get-ComputeTestResourceName
+
+        # SRP
+        $stoname = 'sto' + $rgname;
+        $stotype = 'Standard_GRS';
+        New-AzStorageAccount -ResourceGroupName $rgname -Name $stoname -Location $loc -Type $stotype;
+        $stoaccount = Get-AzStorageAccount -ResourceGroupName $rgname -Name $stoname;
+
+        # NRP
+        $subnet = New-AzVirtualNetworkSubnetConfig -Name ('subnet' + $rgname) -AddressPrefix "10.0.0.0/24";
+        $vnet = New-AzVirtualNetwork -Force -Name ('vnet' + $rgname) -ResourceGroupName $rgname -Location $loc -AddressPrefix "10.0.0.0/16" -Subnet $subnet;
+        $vnet = Get-AzVirtualNetwork -Name ('vnet' + $rgname) -ResourceGroupName $rgname;
+        $subnetId = $vnet.Subnets[0].Id;
+
+        # New VMSS Parameters
+        $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword);
+
+        $imgRef = Get-DefaultCRPImage -loc $loc -New $True;
+        $ipCfg = New-AzVmssIPConfig -Name 'test' -SubnetId $subnetId -PublicIPAddressConfigurationName $ipName -PublicIPAddressConfigurationIdleTimeoutInMinutes 10 -DnsSetting "testvmssdnscom" -PublicIPAddressVersion "IPv4";
+
+        $vmss = New-AzVmssConfig -Location $loc -SkuCapacity 2 -UpgradePolicyMode 'Manual' -EncryptionAtHost -SecurityType $stnd -SkuProfileVmSize @("Standard_D4s_v3") `
+            | Add-AzVmssNetworkInterfaceConfiguration -Name 'test' -Primary $true -IPConfiguration $ipCfg `
+            | Set-AzVmssOSProfile -ComputerNamePrefix 'test' -AdminUsername $adminUsername -AdminPassword $adminPassword `
+            | Set-AzVmssStorageProfile -OsDiskCreateOption 'FromImage' -OsDiskCaching 'None' `
+            -ImageReferenceOffer $imgRef.Offer -ImageReferenceSku $imgRef.Skus -ImageReferenceVersion 'latest' `
+            -ImageReferencePublisher $imgRef.PublisherName;
+
+        # creating new-azvmss using New-VmssConfig
+        $vmssResult = New-AzVmss -ResourceGroupName $rgname -Name $vmssName -VirtualMachineScaleSet $vmss
+
+        Assert-AreEqual $vmssResult.Sku.Name "Mix";
+        Assert-AreEqual $vmssResult.SkuProfile.AllocationStrategy "LowestPrice";
+        Assert-AreEqual $vmssResult.SkuProfile.VMSizes[0].Name "Standard_D4s_v3";
+
+        # update vmss
+        $vmssUpdate = $vmssResult | Update-AzVmss -SkuProfileVmSize @("Standard_D4s_v3", "Standard_D4s_v4") -SkuProfileAllocationStrategy "CapacityOptimized";
+
+        $vmssGet = Get-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName;
+
+        Assert-AreEqual $vmssGet.Sku.Name "Mix";
+        Assert-AreEqual $vmssGet.SkuProfile.AllocationStrategy "CapacityOptimized";
+        Assert-AreEqual $vmssGet.SkuProfile.VMSizes[0].Name "Standard_D4s_v3";
+        Assert-AreEqual $vmssGet.SkuProfile.VMSizes[1].Name "Standard_D4s_v4";
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname
+    }
+}
+
+<#
+.SYNOPSIS
+    Create a VMSS using New-Azvmssconfig
+    Update the Resiliency policies of VMSS using Update-Azvmss
+    Test ResilientVMCreationPolicy and ResilientVMDeletionPolicy
+#>
+function Test-ResiliencyPolicyVMSS
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName
+
+    try
+    {
+        # Common
+        $loc = Get-ComputeVMLocation;
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        # New VMSS Parameters
+        $vmssName = 'vmssResiliencyPolicy' + $rgname;
+
+        $adminUsername = Get-ComputeTestResourceName;
+        $adminPassword = $PLACEHOLDER;
+        $securePassword = ConvertTo-SecureString $adminPassword -AsPlainText -Force;
+        $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $securePassword);
+
+        $vmssConfig = new-azvmssconfig -Location $loc  -EnableResilientVMCreate -EnableResilientVMDelete; 
+        $vmss = New-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName -VirtualMachineScaleSet $vmssConfig;
+        
+        # Asserts 
+        # check ResilientVMCreationPolicy
+        Assert-True { $vmssConfig.ResiliencyPolicy.ResilientVMCreationPolicy.Enabled };
+        # check ResilientVMDeletionPolicy
+        Assert-True { $vmssConfig.ResiliencyPolicy.ResilientVMDeletionPolicy.Enabled };
+
+        Update-azvmss -ResourceGroupName $rgname -VMScaleSetName $vmssName -EnableResilientVMDelete $false -EnableResilientVMCreate $false
+        $updatedVmss = Get-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName;
+
+        # Asserts 
+        # check ResilientVMCreationPolicy
+        Assert-False { $updatedVmss.ResiliencyPolicy.ResilientVMCreationPolicy.Enabled };
+        # check ResilientVMDeletionPolicy
+        Assert-False { $updatedVmss.ResiliencyPolicy.ResilientVMDeletionPolicy.Enabled };
+
+
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname
+    }
+}
+
+
+<#
+.SYNOPSIS
+Test Security Posture Feature
+#>
+function Test-SecurityPostureFeature
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName;
+    $loc = Get-ComputeVMLocation;
+
+    try
+    {
+        # Common
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        $vmssName = 'vmss' + $rgname;
+        $domainNameLabel1 = "d1" + $rgname;
+        
+        $adminUsername = Get-ComputeTestResourceName;
+        $password = Get-PasswordForVM;
+        $adminPassword = $password | ConvertTo-SecureString -AsPlainText -Force;
+        $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword);
+
+        $SecurityPostureId = "/CommunityGalleries/SecurityPosturesBVTGallery/securityPostures/VMSSUniformWindows/versions/latest"
+
+        # create vmss with security posture settings
+        $vmss = New-AzVmss -ResourceGroupName $rgname -Location eastus2euap -Credential $cred -VMScaleSetName $vmssName -DomainNameLabel $domainNameLabel1 -SecurityPostureId $SecurityPostureId -SecurityPostureExcludeExtension "SecurityPostureSecurityAgent"
+
+        # verify
+        Assert-AreEqual $vmss.VirtualMAchineProfile.SecurityPostureReference.Id $SecurityPostureId
+        Assert-AreEqual $vmss.virtualMachineProfile.SecurityPostureReference.ExcludeExtensions.count 1
+
+        # Test New-AzVmssConfig 
+        $vmssConfig = New-AzVmssConfig -SecurityPostureId $SecurityPostureId -SecurityPostureExcludeExtension "SecurityPostureSecurityAgent"
+
+        # Verify 
+        Assert-AreEqual $vmssConfig.VirtualMAchineProfile.SecurityPostureReference.Id $SecurityPostureId
+        Assert-AreEqual $vmssConfig.virtualMachineProfile.SecurityPostureReference.ExcludeExtensions.count 1
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname;
+    }
+}
+function TestGen-setazvmss 
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName;
+    $loc = Get-ComputeVMLocation;
+
+    try
+    {
+        # Common
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        $vmssSize = 'Standard_D4s_v3';
+        $vmssName = 'vmss' + $rgname;
+        $adminUsername = Get-ComputeTestResourceName;
+        $password = Get-PasswordForVM;
+        $adminPassword = $password | ConvertTo-SecureString -AsPlainText -Force;
+        $vmCred = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword);
+
+        # Create a VMSS
+        $vmss = New-AzVmssConfig -Location $loc -SkuCapacity 2 -SkuName $vmssSize -UpgradePolicyMode 'Manual' `
+            | Set-AzVmssOSProfile -ComputerNamePrefix 'test' -AdminUsername $adminUsername -AdminPassword $password;
+
+        $result = New-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName -VirtualMachineScaleSet $vmss;
+
+        # Test new parameters
+        $scheduledEventsAdditionalEndpoints = $true;
+        $enableUserRebootScheduledEvents = $true;
+        $enableUserRedeployScheduledEvents = $true;
+
+        Set-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName `
+            -ScheduledEventsAdditionalEndpoints $scheduledEventsAdditionalEndpoints `
+            -EnableUserRebootScheduledEvents $enableUserRebootScheduledEvents `
+            -EnableUserRedeployScheduledEvents $enableUserRedeployScheduledEvents;
+
+        $vmssGet = Get-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName;
+
+        Assert-AreEqual $vmssGet.VirtualMachineProfile.ScheduledEventsProfile.ScheduledEventsAdditionalEndpoints $scheduledEventsAdditionalEndpoints;
+        Assert-AreEqual $vmssGet.VirtualMachineProfile.ScheduledEventsProfile.EnableUserRebootScheduledEvents $enableUserRebootScheduledEvents;
+        Assert-AreEqual $vmssGet.VirtualMachineProfile.ScheduledEventsProfile.EnableUserRedeployScheduledEvents $enableUserRedeployScheduledEvents;
+
+    }
+    finally
+    {
+        # Cleanup
+        Remove-AzResourceGroup -Name $rgname -Force -ErrorAction SilentlyContinue;
+    }
+}
+
+function TestGen-updateazvmss
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName;
+    $loc = Get-ComputeVMLocation;
+
+    try
+    {
+        # Common
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        $vmssSize = 'Standard_D4s_v3';
+        $PublisherName = "MicrosoftWindowsServer";
+        $Offer = "WindowsServer";
+        $SKU = "2016-datacenter-gensecond";
+        $enable = $true;
+        $disable = $false;
+
+        # NRP
+        $vnetworkName = 'vnet' + $rgname;
+        $subnetName = 'subnet' + $rgname;
+        $subnet = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix "10.0.0.0/24";
+        $vnet = New-AzVirtualNetwork -Name $vnetworkName -ResourceGroupName $rgname -Location $loc -AddressPrefix "10.0.0.0/16" -Subnet $subnet;
+        $vnet = Get-AzVirtualNetwork -Name $vnetworkName -ResourceGroupName $rgname;
+        $subnetId = $vnet.Subnets[0].Id;
+
+        # New VMSS Parameters
+        $vmssName = 'vmss' + $rgname;
+        $adminUsername = Get-ComputeTestResourceName;
+        $adminPassword = Get-PasswordForVM | ConvertTo-SecureString -AsPlainText -Force;
+
+        $imgRef = New-Object -TypeName 'Microsoft.Azure.Commands.Compute.Models.PSVirtualMachineImage';
+        $imgRef.PublisherName = $PublisherName;
+        $imgRef.Offer = $Offer;
+        $imgRef.Skus = $SKU;
+        $imgRef.Version = "latest";
+        
+        $ipCfg = New-AzVmssIPConfig -Name 'test' -SubnetId $subnetId;
+
+        $vmss = New-AzVmssConfig -Location $loc -SkuCapacity 2 -SkuName $vmssSize -UpgradePolicyMode 'Manual' `
+            | Add-AzVmssNetworkInterfaceConfiguration -Name 'test' -Primary $true -IPConfiguration $ipCfg `
+            | Set-AzVmssOSProfile -ComputerNamePrefix 'test' -AdminUsername $adminUsername -AdminPassword $adminPassword `
+            | Set-AzVmssStorageProfile -OsDiskCreateOption 'FromImage' -OsDiskCaching 'ReadOnly' `
+            -ImageReferenceOffer $imgRef.Offer -ImageReferenceSku $imgRef.Skus -ImageReferenceVersion $imgRef.Version `
+            -ImageReferencePublisher $imgRef.PublisherName ;
+
+        # Create VMSS
+        $result = New-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName -VirtualMachineScaleSet $vmss;
+        $vmssGet = Get-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName; 
+
+        # Test new parameters
+        Update-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName -VirtualMachineScaleSet $vmssGet `
+            -ScheduledEventsAdditionalEndpoints $true -EnableUserRebootScheduledEvents $true -EnableUserRedeployScheduledEvents $true;
+
+        $vmssGetUpdated = Get-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName;
+        Assert-AreEqual $vmssGetUpdated.VirtualMachineProfile.ScheduledEventsProfile.ScheduledEventsAdditionalEndpoints $true;
+        Assert-AreEqual $vmssGetUpdated.VirtualMachineProfile.ScheduledEventsProfile.EnableUserRebootScheduledEvents $true;
+        Assert-AreEqual $vmssGetUpdated.VirtualMachineProfile.ScheduledEventsProfile.EnableUserRedeployScheduledEvents $true;
+
+        # Test disabling the new parameters
+        Update-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName -VirtualMachineScaleSet $vmssGetUpdated `
+            -ScheduledEventsAdditionalEndpoints $false -EnableUserRebootScheduledEvents $false -EnableUserRedeployScheduledEvents $false;
+
+        $vmssGetUpdatedDisabled = Get-AzVmss -ResourceGroupName $rgname -VMScaleSetName $vmssName;
+        Assert-AreEqual $vmssGetUpdatedDisabled.VirtualMachineProfile.ScheduledEventsProfile.ScheduledEventsAdditionalEndpoints $false;
+        Assert-AreEqual $vmssGetUpdatedDisabled.VirtualMachineProfile.ScheduledEventsProfile.EnableUserRebootScheduledEvents $false;
+        Assert-AreEqual $vmssGetUpdatedDisabled.VirtualMachineProfile.ScheduledEventsProfile.EnableUserRedeployScheduledEvents $false;
+    }
+    finally
+    {
+        # Cleanup
+        Remove-AzResourceGroup -Name $rgname -Force -ErrorAction SilentlyContinue;
+    }
+}
+
+function TestGen-updateazvm
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName
+
+    try
+    {
+        # Common
+        $loc = Get-ComputeVMLocation;
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        # New VM Parameters
+        $vmName = 'vm' + $rgname;
+        $adminUsername = 'Foo12';
+        $adminPassword = $PLACEHOLDER;
+        $securePassword = ConvertTo-SecureString $adminPassword -AsPlainText -Force;
+        $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $securePassword);
+
+        $vm = New-AzVM `
+            -ResourceGroupName $rgname `
+            -Location $loc `
+            -Name $vmName `
+            -Credential $cred `
+            -DomainNameLabel "vm-70f699"
+
+        # Test Update-AzVM with new parameters
+        Update-AzVM `
+            -ResourceGroupName $rgname `
+            -VM $vm `
+            -ScheduledEventsAdditionalEndpoints $true `
+            -EnableUserRebootScheduledEvents $true `
+            -EnableUserRedeployScheduledEvents $true
+
+        $updatedVm = Get-AzVM -ResourceGroupName $rgname -Name $vmName
+
+        # Assertions
+        Assert-AreEqual $true $updatedVm.ScheduledEventsAdditionalEndpoints
+        Assert-AreEqual $true $updatedVm.EnableUserRebootScheduledEvents
+        Assert-AreEqual $true $updatedVm.EnableUserRedeployScheduledEvents
+
+        # Test Update-AzVM with false parameters
+        Update-AzVM `
+            -ResourceGroupName $rgname `
+            -VM $vm `
+            -ScheduledEventsAdditionalEndpoints $false `
+            -EnableUserRebootScheduledEvents $false `
+            -EnableUserRedeployScheduledEvents $false
+
+        $updatedVmFalse = Get-AzVM -ResourceGroupName $rgname -Name $vmName
+
+        # Assertions
+        Assert-AreEqual $false $updatedVmFalse.ScheduledEventsAdditionalEndpoints
+        Assert-AreEqual $false $updatedVmFalse.EnableUserRebootScheduledEvents
+        Assert-AreEqual $false $updatedVmFalse.EnableUserRedeployScheduledEvents
+
+    }
+    finally
+    {
+        # Cleanup
+        Remove-AzResourceGroup -Name $rgname -Force -ErrorAction SilentlyContinue
+    }
+}

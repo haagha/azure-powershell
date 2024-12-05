@@ -24,20 +24,20 @@ New-AzOracleCloudVMCluster -Name <String> -ResourceGroupName <String> [-Subscrip
  [-NsgCidr <INsgCidr[]>] [-OcpuCount <Single>] [-ScanListenerPortTcp <Int32>] [-ScanListenerPortTcpSsl <Int32>]
  [-SshPublicKey <String[]>] [-SubnetId <String>] [-SystemVersion <String>] [-Tag <Hashtable>]
  [-TimeZone <String>] [-VnetId <String>] [-ZoneId <String>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
- [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### CreateViaJsonFilePath
 ```
 New-AzOracleCloudVMCluster -Name <String> -ResourceGroupName <String> [-SubscriptionId <String>]
- -JsonFilePath <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-ProgressAction <ActionPreference>]
+ -JsonFilePath <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
  [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### CreateViaJsonString
 ```
 New-AzOracleCloudVMCluster -Name <String> -ResourceGroupName <String> [-SubscriptionId <String>]
- -JsonString <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-ProgressAction <ActionPreference>]
+ -JsonString <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
  [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
@@ -246,7 +246,6 @@ The percentage assigned to DATA storage (user data and database files).
 The remaining percentage is assigned to RECO storage (database redo logs, archive logs, and recovery manager backups).
 Accepted values are 35, 40, 60 and 80.
 The default is 80 percent assigned to DATA storage.
-See [Storage Configuration](/Content/Database/Concepts/exaoverview.htm#Exadata) in the Exadata documentation for details on the impact of the configuration settings on storage.
 
 ```yaml
 Type: System.Int32
@@ -551,21 +550,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressAction
-{{ Fill ProgressAction Description }}
-
-```yaml
-Type: System.Management.Automation.ActionPreference
-Parameter Sets: (All)
-Aliases: proga
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -ResourceGroupName
 The name of the resource group.
 The name is case insensitive.
@@ -692,7 +676,6 @@ Accept wildcard characters: False
 
 ### -TimeZone
 The time zone of the cloud VM cluster.
-For details, see [Exadata Infrastructure Time Zones](/Content/Database/References/timezones.htm).
 
 ```yaml
 Type: System.String

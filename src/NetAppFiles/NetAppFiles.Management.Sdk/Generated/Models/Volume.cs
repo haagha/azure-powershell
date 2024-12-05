@@ -55,7 +55,8 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// <param name="serviceLevel">The service level of the file system
         /// Possible values include: &#39;Standard&#39;, &#39;Premium&#39;, &#39;Ultra&#39;, &#39;StandardZRS&#39;</param>
 
-        /// <param name="networkFeatures">Network features available to the volume, or current state of update.
+        /// <param name="networkFeatures">The original value of the network features type available to the volume at
+        /// the time it was created.
         /// Possible values include: &#39;Basic&#39;, &#39;Standard&#39;, &#39;Basic_Standard&#39;,
         /// &#39;Standard_Basic&#39;</param>
 
@@ -73,9 +74,10 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// </param>
 
         /// <param name="usageThreshold">Maximum storage quota allowed for a file system in bytes. This is a soft
-        /// quota used for alerting only. Minimum size is 100 GiB. Upper limit is
-        /// 100TiB, 500Tib for LargeVolume or 2400Tib for LargeVolume on exceptional
-        /// basis. Specified in bytes.
+        /// quota used for alerting only. For regular volumes, valid values are in the
+        /// range 50GiB to 100TiB. For large volumes, valid values are in the range
+        /// 100TiB to 500TiB, and on an exceptional basis, from to 2400GiB to 2400TiB.
+        /// Values expressed in bytes as multiples of 1 GiB.
         /// </param>
 
         /// <param name="exportPolicy">Set of export policy rules
@@ -104,6 +106,11 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// <param name="subnetId">The Azure Resource URI for a delegated subnet. Must have the delegation
         /// Microsoft.NetApp/volumes
         /// </param>
+
+        /// <param name="effectiveNetworkFeatures">The effective value of the network features type available to the volume,
+        /// or current effective state of update.
+        /// Possible values include: &#39;Basic&#39;, &#39;Standard&#39;, &#39;Basic_Standard&#39;,
+        /// &#39;Standard_Basic&#39;</param>
 
         /// <param name="networkSiblingSetId">Network Sibling Set ID for the the group of volumes sharing networking
         /// resources.
@@ -262,7 +269,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
 
         /// <param name="originatingResourceId">Id of the snapshot or backup that the volume is restored from.
         /// </param>
-        public Volume(string location, string creationToken, long usageThreshold, string subnetId, string id = default(string), string name = default(string), string type = default(string), SystemData systemData = default(SystemData), System.Collections.Generic.IDictionary<string, string> tags = default(System.Collections.Generic.IDictionary<string, string>), string etag = default(string), System.Collections.Generic.IList<string> zones = default(System.Collections.Generic.IList<string>), string serviceLevel = default(string), string networkFeatures = default(string), string securityStyle = default(string), string enableSubvolumes = default(string), string fileSystemId = default(string), VolumePropertiesExportPolicy exportPolicy = default(VolumePropertiesExportPolicy), System.Collections.Generic.IList<string> protocolTypes = default(System.Collections.Generic.IList<string>), string provisioningState = default(string), string snapshotId = default(string), bool? deleteBaseSnapshot = default(bool?), string backupId = default(string), string baremetalTenantId = default(string), string networkSiblingSetId = default(string), string storageToNetworkProximity = default(string), System.Collections.Generic.IList<MountTargetProperties> mountTargets = default(System.Collections.Generic.IList<MountTargetProperties>), string volumeType = default(string), VolumePropertiesDataProtection dataProtection = default(VolumePropertiesDataProtection), bool? isRestoring = default(bool?), bool? snapshotDirectoryVisible = default(bool?), bool? kerberosEnabled = default(bool?), bool? smbEncryption = default(bool?), string smbAccessBasedEnumeration = default(string), string smbNonBrowsable = default(string), bool? smbContinuouslyAvailable = default(bool?), double? throughputMibps = default(double?), double? actualThroughputMibps = default(double?), string encryptionKeySource = default(string), string keyVaultPrivateEndpointResourceId = default(string), bool? ldapEnabled = default(bool?), bool? coolAccess = default(bool?), int? coolnessPeriod = default(int?), string coolAccessRetrievalPolicy = default(string), string unixPermissions = default(string), int? cloneProgress = default(int?), string fileAccessLogs = default(string), string avsDataStore = default(string), System.Collections.Generic.IList<string> dataStoreResourceId = default(System.Collections.Generic.IList<string>), bool? isDefaultQuotaEnabled = default(bool?), long? defaultUserQuotaInKiBs = default(long?), long? defaultGroupQuotaInKiBs = default(long?), long? maximumNumberOfFiles = default(long?), string volumeGroupName = default(string), string capacityPoolResourceId = default(string), string proximityPlacementGroup = default(string), string t2Network = default(string), string volumeSpecName = default(string), bool? encrypted = default(bool?), System.Collections.Generic.IList<PlacementKeyValuePairs> placementRules = default(System.Collections.Generic.IList<PlacementKeyValuePairs>), string provisionedAvailabilityZone = default(string), bool? isLargeVolume = default(bool?), string originatingResourceId = default(string))
+        public Volume(string location, string creationToken, long usageThreshold, string subnetId, string id = default(string), string name = default(string), string type = default(string), SystemData systemData = default(SystemData), System.Collections.Generic.IDictionary<string, string> tags = default(System.Collections.Generic.IDictionary<string, string>), string etag = default(string), System.Collections.Generic.IList<string> zones = default(System.Collections.Generic.IList<string>), string serviceLevel = default(string), string networkFeatures = default(string), string securityStyle = default(string), string enableSubvolumes = default(string), string fileSystemId = default(string), VolumePropertiesExportPolicy exportPolicy = default(VolumePropertiesExportPolicy), System.Collections.Generic.IList<string> protocolTypes = default(System.Collections.Generic.IList<string>), string provisioningState = default(string), string snapshotId = default(string), bool? deleteBaseSnapshot = default(bool?), string backupId = default(string), string baremetalTenantId = default(string), string effectiveNetworkFeatures = default(string), string networkSiblingSetId = default(string), string storageToNetworkProximity = default(string), System.Collections.Generic.IList<MountTargetProperties> mountTargets = default(System.Collections.Generic.IList<MountTargetProperties>), string volumeType = default(string), VolumePropertiesDataProtection dataProtection = default(VolumePropertiesDataProtection), bool? isRestoring = default(bool?), bool? snapshotDirectoryVisible = default(bool?), bool? kerberosEnabled = default(bool?), bool? smbEncryption = default(bool?), string smbAccessBasedEnumeration = default(string), string smbNonBrowsable = default(string), bool? smbContinuouslyAvailable = default(bool?), double? throughputMibps = default(double?), double? actualThroughputMibps = default(double?), string encryptionKeySource = default(string), string keyVaultPrivateEndpointResourceId = default(string), bool? ldapEnabled = default(bool?), bool? coolAccess = default(bool?), int? coolnessPeriod = default(int?), string coolAccessRetrievalPolicy = default(string), string unixPermissions = default(string), int? cloneProgress = default(int?), string fileAccessLogs = default(string), string avsDataStore = default(string), System.Collections.Generic.IList<string> dataStoreResourceId = default(System.Collections.Generic.IList<string>), bool? isDefaultQuotaEnabled = default(bool?), long? defaultUserQuotaInKiBs = default(long?), long? defaultGroupQuotaInKiBs = default(long?), long? maximumNumberOfFiles = default(long?), string volumeGroupName = default(string), string capacityPoolResourceId = default(string), string proximityPlacementGroup = default(string), string t2Network = default(string), string volumeSpecName = default(string), bool? encrypted = default(bool?), System.Collections.Generic.IList<PlacementKeyValuePairs> placementRules = default(System.Collections.Generic.IList<PlacementKeyValuePairs>), string provisionedAvailabilityZone = default(string), bool? isLargeVolume = default(bool?), string originatingResourceId = default(string))
 
         : base(location, id, name, type, systemData, tags)
         {
@@ -283,6 +290,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
             this.BackupId = backupId;
             this.BaremetalTenantId = baremetalTenantId;
             this.SubnetId = subnetId;
+            this.EffectiveNetworkFeatures = effectiveNetworkFeatures;
             this.NetworkSiblingSetId = networkSiblingSetId;
             this.StorageToNetworkProximity = storageToNetworkProximity;
             this.MountTargets = mountTargets;
@@ -351,8 +359,8 @@ namespace Microsoft.Azure.Management.NetApp.Models
         public string ServiceLevel {get; set; }
 
         /// <summary>
-        /// Gets or sets network features available to the volume, or current state of
-        /// update. Possible values include: &#39;Basic&#39;, &#39;Standard&#39;, &#39;Basic_Standard&#39;, &#39;Standard_Basic&#39;
+        /// Gets or sets the original value of the network features type available to
+        /// the volume at the time it was created. Possible values include: &#39;Basic&#39;, &#39;Standard&#39;, &#39;Basic_Standard&#39;, &#39;Standard_Basic&#39;
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "properties.networkFeatures")]
         public string NetworkFeatures {get; set; }
@@ -386,9 +394,10 @@ namespace Microsoft.Azure.Management.NetApp.Models
 
         /// <summary>
         /// Gets or sets maximum storage quota allowed for a file system in bytes. This
-        /// is a soft quota used for alerting only. Minimum size is 100 GiB. Upper
-        /// limit is 100TiB, 500Tib for LargeVolume or 2400Tib for LargeVolume on
-        /// exceptional basis. Specified in bytes.
+        /// is a soft quota used for alerting only. For regular volumes, valid values
+        /// are in the range 50GiB to 100TiB. For large volumes, valid values are in
+        /// the range 100TiB to 500TiB, and on an exceptional basis, from to 2400GiB to
+        /// 2400TiB. Values expressed in bytes as multiples of 1 GiB.
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "properties.usageThreshold")]
         public long UsageThreshold {get; set; }
@@ -443,6 +452,13 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "properties.subnetId")]
         public string SubnetId {get; set; }
+
+        /// <summary>
+        /// Gets the effective value of the network features type available to the
+        /// volume, or current effective state of update. Possible values include: &#39;Basic&#39;, &#39;Standard&#39;, &#39;Basic_Standard&#39;, &#39;Standard_Basic&#39;
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty(PropertyName = "properties.effectiveNetworkFeatures")]
+        public string EffectiveNetworkFeatures {get; private set; }
 
         /// <summary>
         /// Gets network Sibling Set ID for the the group of volumes sharing networking
@@ -779,10 +795,11 @@ namespace Microsoft.Azure.Management.NetApp.Models
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.InclusiveMaximum, "UsageThreshold", 2638827906662400);
             }
-            if (this.UsageThreshold < 107374182400)
+            if (this.UsageThreshold < 53687091200)
             {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.InclusiveMinimum, "UsageThreshold", 107374182400);
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.InclusiveMinimum, "UsageThreshold", 53687091200);
             }
+
 
 
 

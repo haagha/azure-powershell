@@ -12,6 +12,41 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------------
 
+function Test-AzurePERestore
+{
+	$location = "eastus2euap"
+	$resourceGroupName = "arpja"
+	$vaultName = "arpja-pe-e2e-validation-vault"
+	$vmName = "peval-ecy-win44"
+	$subId = "f2edfd5d-5496-4683-b94f-b3588c579009"
+	$subName = "sriramsa-IaaSVmBackup Canary Subscription"
+	$saName = "arpjapevalrestoresa"
+	$targetVMName = "ps-diskaccess"
+	$targetVNetName = "arpjavnet238"
+	$targetVNetRG = "arpja"
+	$targetSubnetName = "default"
+	$recoveryPointId = "252905611419763" # latest recovery point
+	$targetDiskAccessId = "/subscriptions/f2edfd5d-5496-4683-b94f-b3588c579009/resourceGroups/arpja/providers/Microsoft.Compute/diskAccesses/arpja-peval-restore-da"
+
+	try
+	{	
+		# Setup
+		$vault = Get-AzRecoveryServicesVault -ResourceGroupName $resourceGroupName -Name $vaultName
+		$item = Get-AzRecoveryServicesBackupItem -BackupManagementType AzureVM -WorkloadType AzureVM `
+			-VaultId $vault.ID | Where-Object { $_.Name -match $vmName }
+
+		$rp = Get-AzRecoveryServicesBackupRecoveryPoint -Item $item[0] -VaultId $vault.ID -RecoveryPointId $recoveryPointId
+		
+		$diskAccessRestoreJob = Restore-AzRecoveryServicesBackupItem -VaultLocation $vault.Location -RecoveryPoint $rp[0] -StorageAccountName $saName -StorageAccountResourceGroupName $vault.ResourceGroupName -TargetResourceGroupName $vault.ResourceGroupName -TargetVMName $targetVMName -TargetVNetName $targetVNetName -TargetVNetResourceGroup $targetVNetRG -TargetSubnetName $targetSubnetName -VaultId $vault.Id -DiskAccessOption EnablePrivateAccessForAllDisks -TargetDiskAccessId $targetDiskAccessId | Wait-AzRecoveryServicesBackupJob -VaultId $vault.ID
+		
+		Assert-True { $diskAccessRestoreJob.Status -eq "Completed" }
+	}
+	finally
+	{
+		Delete-VM $resourceGroupName $targetVMName
+	}
+}
+
 function Test-AzureVaultSoftDelete
 {	
 	$resourceGroupName = "hiagarg"
@@ -381,6 +416,7 @@ function Test-AzureRSVaultCMK
 	$vaultName = "cmk-pstest-vault"
 	$keyVault = "cmk-pstest-keyvault"
 	$encryptionKeyId = "https://cmk-pstest-keyvault.vault.azure.net/keys/cmk-pstest-key/5569d5a163ee474cad2da4ac334af9d7"
+	$encryptionKeyId2 = "https://oss-pstest-keyvault.vault.azure.net/keys/cmk-pstest-key2"
 
 	try
 	{	
@@ -388,13 +424,17 @@ function Test-AzureRSVaultCMK
 		$vault = Get-AzRecoveryServicesVault -ResourceGroupName $resourceGroupName -Name $vaultName
 
 		# error scenario
-		Assert-ThrowsContains { Set-AzRecoveryServicesVaultProperty -EncryptionKeyId $encryptionKeyId -VaultId $vault.ID -InfrastructureEncryption -UseSystemAssignedIdentity $false } `
+		Assert-ThrowsContains { Set-AzRecoveryServicesVaultProperty -EncryptionKeyId $encryptionKeyId2 -VaultId $vault.ID -InfrastructureEncryption -UseSystemAssignedIdentity $false } `
 		"Please input a valid UserAssignedIdentity";	
 
 		# set and verify - CMK encryption property to UAI 
-		Set-AzRecoveryServicesVaultProperty -EncryptionKeyId $encryptionKeyId -VaultId $vault.ID -InfrastructureEncryption -UseSystemAssignedIdentity $false  -UserAssignedIdentity $vault.Identity.UserAssignedIdentities.Keys[0]
+		Set-AzRecoveryServicesVaultProperty -EncryptionKeyId $encryptionKeyId2 -VaultId $vault.ID -InfrastructureEncryption -UseSystemAssignedIdentity $false  -UserAssignedIdentity $vault.Identity.UserAssignedIdentities.Keys[0]
 		$prop = Get-AzRecoveryServicesVaultProperty -VaultId $vault.ID
 		Assert-True { $prop.encryptionProperties.UserAssignedIdentity -eq $vault.Identity.UserAssignedIdentities.Keys[0] }
+
+		$vault = Get-AzRecoveryServicesVault -ResourceGroupName $resourceGroupName -Name $vaultName
+		Assert-True { $vault.Properties.EncryptionProperty.KekIdentity.UserAssignedIdentity -eq $vault.Identity.UserAssignedIdentities.Keys[0] }
+		Assert-True { $vault.Properties.EncryptionProperty.KeyVaultProperties.KeyUri -eq $encryptionKeyId2 }
 
 		Start-TestSleep -Seconds 10
 

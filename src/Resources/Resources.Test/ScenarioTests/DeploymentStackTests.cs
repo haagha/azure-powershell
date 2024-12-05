@@ -30,12 +30,26 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         {
             TestRunner.RunTestScript("Test-GetResourceGroupDeploymentStack");
         }
-    
+
+        [Fact()]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewResourceGroupDeploymentStackFromBicepparamFileWithOverrides()
+        {
+            TestRunner.RunTestScript("Test-NewResourceGroupDeploymentStackFromBicepparamFileWithOverrides");
+        }
+
         [Fact()]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void TestNewResourceGroupDeploymentStack()
         {
             TestRunner.RunTestScript("Test-NewResourceGroupDeploymentStack");
+        }
+
+        [Fact()]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestTestResourceGroupDeploymentStack()
+        {
+            TestRunner.RunTestScript("Test-TestResourceGroupDeploymentStack");
         }
 
         [Fact()]
@@ -124,6 +138,13 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
 
         [Fact()]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestTestSubscriptionDeploymentStack()
+        {
+            TestRunner.RunTestScript("Test-TestSubscriptionDeploymentStack");
+        }
+
+        [Fact()]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void TestNewSubscriptionDeploymentStackUnmanageActions()
         {
             TestRunner.RunTestScript("Test-NewSubscriptionDeploymentStackUnmanageActions");
@@ -204,6 +225,13 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         public void TestNewManagementGroupDeploymentStack()
         {
             TestRunner.RunTestScript("Test-NewManagementGroupDeploymentStack");
+        }
+
+        [Fact()]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestTestManagementGroupDeploymentStack()
+        {
+            TestRunner.RunTestScript("Test-TestManagementGroupDeploymentStack");
         }
 
         [Fact()]

@@ -18,6 +18,29 @@
         - Additional information about change #1
 -->
 ## Upcoming Release
+* Added support for additional MySQL connection properties.
+* Added support for Azure PostgreSQL v2, updated connection strings, and corrected Linked JSON configurations.
+
+## Version 1.18.9
+* Added pageSize support to Salesforce V2 Source.
+* Added pageSize support to ServiceNow V2 Source.
+* Added host property to Snowflake linked service.
+* Fixed missing authenticationType in PostgreSQL V2 linked service.
+
+## Version 1.18.8
+* Added support for Iceberg format as a sink.
+* Enabled sslMode and useSystemTrustStore options for MariaDB.
+
+## Version 1.18.7
+* Supported managed identity for Data Factory Azure File connector.
+* Supported ServicePrincipalCert Auth for Data Factory Rest connector.
+* Supported ServicePrincipalCert Auth for Data Factory SharePointOnlineList connector.
+
+## Version 1.18.6
+* Added security enhancement feature snowflake support storage integration.
+* Supported 'domain' Property In Dynamics Family.
+* Enabled UAMI auth for Data Factory Sql Server connector.
+* Supported managed identity for Data Factory Azure Table connector.
 
 ## Version 1.18.5
 * Added UAMI in DynamicsCrm LinkedService

@@ -5295,8 +5295,8 @@ function Test-VirtualMachineEnableAutoUpdate
         $computerName = "v" + $rgname;
 
         # VM Credential
-        $user = "usertest";
-        $password = "Testing1234567";
+        $user = Get-ComputeTestResourceName;
+        $password = Get-PasswordForVM;
         $securePassword = ConvertTo-SecureString $password -AsPlainText -Force;
         $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
 
@@ -5620,6 +5620,46 @@ function Test-VMNoPublicIPAddress
         # Check that no PublicIPAddress resource was created.
         $publicIPAddress = Get-AzPublicIpAddress -ResourceGroupName $rgname;
         Assert-Null $publicIPAddress;
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname;
+    }
+}
+
+<#
+.SYNOPSIS
+Test Virtual Machine creation process with a Public IP Address when it is
+provided as a parameter.
+When PublicIpSku is not specified, it should be Standard Sku by default 
+(Since Az 13.0.0 and Az.Compute 9.0.0).
+#>
+function Test-VMWithPublicIPAddressStandardSku
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName;
+    $loc = Get-ComputeVMLocation;
+
+    try
+    {
+        $pipName = "test-pip-standard";
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+        # VM Profile & Hardware
+        $vmname = 'v' + $rgname;
+        $domainNameLabel = "d1" + $rgname;
+
+        # Creating a VM using simple parameter set
+        $securePassword = Get-PasswordForVM | ConvertTo-SecureString -AsPlainText -Force;
+        $user = "admin01";
+        $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
+
+        $vm = New-AzVM -ResourceGroupName $rgname -Name $vmname -Credential $cred -DomainNameLabel $domainNameLabel -PublicIPAddressName $pipName;
+
+        # Check that no PublicIPAddress resource was created.
+        $publicIPAddress = Get-AzPublicIpAddress -ResourceGroupName $rgname -Name $pipName;
+        Assert-AreEqual $publicIPAddress.Sku.Name "Standard";
     }
     finally
     {
@@ -6255,7 +6295,7 @@ function Test-ManualConfidentialVMSetAzVmOsDiskDesIdDiskWithVMGuest
         $secureEncryptGuestState = 'DiskWithVMGuestState';
         $vmSecurityType = "ConfidentialVM";
         $user = "admin01";
-        $password = "Testing1234567";
+        $password = $PLACEHOLDER;
         $securePassword = $password | ConvertTo-SecureString -AsPlainText -Force;
         $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
 
@@ -6445,7 +6485,7 @@ function Test-ConfVMSetAzDiskSecurityProfile
         $KeySize = 3072;
 
         # Creating a VM using simple parameterset
-        $securePassword = "Testing1234567" | ConvertTo-SecureString -AsPlainText -Force;
+        $securePassword = "*****" | ConvertTo-SecureString -AsPlainText -Force;
         $user = "admin01";
         $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
 
@@ -6583,7 +6623,8 @@ function Test-ConfVMSetAzDiskEncryptionSetConfig
         $desName= "des" + $rgname;
 
         # Creating a VM using simple parameterset
-        $securePassword = "Testing1234567" | ConvertTo-SecureString -AsPlainText -Force;
+        $password = "*****";
+        $securePassword = $password | ConvertTo-SecureString -AsPlainText -Force;
         $user = "admin01";
         $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
 
@@ -7448,7 +7489,7 @@ Testing Capacity Reservation Sharing profile parameter
 Setting Sharing profile with multiple subs
 Then unsharing using empty string as value
 #>
-function Test-CapacityReservationSharingProfile
+function Test-CapacityReservationGroupResourceIdsOnly
 {
     # Setup
     $rgname = Get-ComputeTestResourceName;
@@ -7460,26 +7501,16 @@ function Test-CapacityReservationSharingProfile
 
         # create a CRG
         $CRGName = 'CRG' + $rgname
-        New-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName -Location $loc -SharingProfile "/subscriptions/88fd8cb2-8248-499e-9a2d-4929a4b0133c"
+        New-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName -Location $loc
 
-        # try Get-CRG with InstanceView
-        $CRG = Get-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName -InstanceView
-        Assert-AreEqual "/subscriptions/88fd8cb2-8248-499e-9a2d-4929a4b0133c" $crg.SharingProfile.SubscriptionIds.Id
 
-        # Update CRG with new subscription
-        Update-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName -SharingProfile "/subscriptions/88fd8cb2-8248-499e-9a2d-4929a4b0133c", "/subscriptions/24fb23e3-6ba3-41f0-9b6e-e41131d5d61e"
-        $CRG = Get-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName -InstanceView
-        Assert-AreEqual 2 $crg.SharingProfile.SubscriptionIds.Count
+        # try Get-CRG with ResourceIdsOnly All
+        $CRG = Get-AzCapacityReservationGroup -ResourceIdsOnly All
+        Assert-AreEqual "/subscriptions/e37510d7-33b6-4676-886f-ee75bcc01871/resourceGroups/$rgname/providers/Microsoft.Compute/capacityReservationGroups/$CRGName" $CRG.Id
 
-        # Clear Sharing Profile for CapacityReservationGroup
-        Update-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName -SharingProfile ""
-        $CRG = Get-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName -InstanceView
-        Assert-AreEqual $null $crg.SharingProfile
-
-         # remove CRG
-        Remove-AzCapacityReservationGroup -ResourceGroupName $rgname -Name $CRGName
-        $CRG = Get-AzCapacityReservationGroup -ResourceGroupName $rgname
-        Assert-AreEqual $null $CRG.count
+        # try Get-CRG with ResourceIdsOnly CreatedInSubscription
+        $CRG = Get-AzCapacityReservationGroup -ResourceIdsOnly CreatedInSubscription
+        Assert-AreEqual "/subscriptions/e37510d7-33b6-4676-886f-ee75bcc01871/resourceGroups/$rgname/providers/Microsoft.Compute/capacityReservationGroups/$CRGName" $CRG.Id
 
     }
     finally
@@ -7536,9 +7567,9 @@ function Test-VMDefaultsToTrustedLaunchImgWhenStnd
 
 <#
 .SYNOPSIS
-Test Add-AzVMDataDisk
+Test Add-AzVMDataDisk and Remove-AzVMDataDisk
 #>
-function Test-AddVMDataDisk
+function Test-AddRemoveVMDataDisk
 {
     # To have a test recording 
     Get-AzVm 
@@ -7547,8 +7578,218 @@ function Test-AddVMDataDisk
     $vmname = 'vm' + $name;
     $vmConfig = New-AzVmConfig -VMName $vmname -VMSize 'testVMSize'
 
-    $vmConfig = Add-AzVMDataDisk -VM $vmConfig -Name datadisk0 -VhdUri "testVhdUri" -SourceResourceId "testSourceResourceId" -CreateOption Copy -Lun 1
+    $vmConfig = Add-AzVMDataDisk -VM $vmConfig -Name 'datadisk0' -VhdUri "testVhdUri" -SourceResourceId "testSourceResourceId" -CreateOption Copy -Lun 1
+    $vmConfig = Add-AzVMDataDisk -VM $vmConfig -Name 'datadisk1' -Caching 'ReadOnly' -DiskSizeInGB 12 -Lun 3 -CreateOption Empty;
+    $vmConfig = Add-AzVMDataDisk -VM $vmConfig -Name 'datadisk2' -Caching 'ReadOnly' -DiskSizeInGB 12 -Lun 3 -CreateOption Empty;
+
+    $vmConfigOriginal = $vmConfig
+
+    # Validate Add-AzVMDataDisk
+    Assert-AreEqual $vmConfig.StorageProfile.DataDisks[0].SourceResource.id "testSourceResourceId"
+
+    # test Remove-AzVMDataDisk
+    $vmConfig = Remove-AzVMDataDisk -VM $vmConfig -DataDiskNames @('datadisk1') -ForceDetach
 
     # Validate
-    Assert-AreEqual $vmConfig.StorageProfile.DataDisks[0].SourceResource.id "testSourceResourceId"
+    $dataDisks = $vmConfig.StorageProfile.DataDisks
+    Assert-NotNullOrEmpty $dataDisks
+    Assert-AreEqual $dataDisks.Count 3
+    Assert-AreEqual $dataDisks[1].ToBeDetached $true
+    Assert-AreEqual $dataDisks[1].DetachOption "ForceDetach"
+    Assert-AreNotEqual $dataDisks[2].ToBeDetached $true
+    Assert-AreNotEqual $dataDisks[2].DetachOption "ForceDetach"
+
+
+
+    # test Remove-azVMDataDisk without -DataDiskNames but with -ForceDetach
+    $vmConfig = $vmConfigOriginal
+    $vmConfig = Remove-AzVMDataDisk -VM $vmConfig -ForceDetach
+
+    # Validate
+    $dataDisks = $vmConfig.StorageProfile.DataDisks
+    Assert-AreEqual $dataDisks.Count 3
+    Assert-AreEqual $dataDisks[0].ToBeDetached $true
+    Assert-AreEqual $dataDisks[0].DetachOption "ForceDetach"
+    Assert-AreEqual $dataDisks[1].ToBeDetached $true
+    Assert-AreEqual $dataDisks[1].DetachOption "ForceDetach"
+    Assert-AreEqual $dataDisks[2].ToBeDetached $true
+    Assert-AreEqual $dataDisks[2].DetachOption "ForceDetach"
+
+
+    # test Remove-AzVMDataDisk without -DataDiskNames and -ForceDetach
+    $vmConfig = $vmConfigOriginal
+    $vmConfig = Remove-AzVMDataDisk -VM $vmConfig 
+
+    # Validate 
+    $dataDisks = $vmConfig.StorageProfile.DataDisks
+    Assert-Null $dataDisks
+
+}
+
+<#
+.SYNOPSIS
+Test Set-AzVMOperatingSystem does not have a null ref exception.
+The ComputerName is an expected required parameter. 
+#>
+function Test-VMSetAzOSCredentialNullRef
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName;
+    $loc = "westus2";#Get-ComputeVMLocation;
+
+    try
+    {
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+        # SimpleParameterSet, no config, scenario.
+        # create credential
+        $password = Get-PasswordForVM;
+        $securePassword = $password | ConvertTo-SecureString -AsPlainText -Force;
+        $user = Get-ComputeTestResourceName;
+        $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
+
+        # DefaultParameterSet with VMConfig scenario
+        $domainNameLabel = "d2" + $rgname;
+        $vmsize = 'Standard_D4s_v3';
+        $vmname = 'v' + $rgname;
+        $vnetname = "vn" + $rgname;
+        $vnetAddress = "10.0.0.0/16";
+        $subnetname = "slb" + $rgname;
+        $subnetAddress = "10.0.2.0/24";
+        $OSDiskName = $vmname + "d";
+        $NICName = $vmname+ "n";
+        $NSGName = $vmname + "nsg";
+
+        # Creating a VM using Default parameterset
+        $frontendSubnet = New-AzVirtualNetworkSubnetConfig -Name $subnetname -AddressPrefix $subnetAddress;
+
+        $vnet = New-AzVirtualNetwork -Name $vnetname -ResourceGroupName $rgname -Location $loc -AddressPrefix $vnetAddress -Subnet $frontendSubnet;
+
+        $nsgRuleRDP = New-AzNetworkSecurityRuleConfig -Name RDP  -Protocol Tcp  -Direction Inbound -Priority 1001 -SourceAddressPrefix * -SourcePortRange * -DestinationAddressPrefix * -DestinationPortRange 3389 -Access Allow;
+        $nsg = New-AzNetworkSecurityGroup -ResourceGroupName $rgname -Location $loc -Name $NSGName  -SecurityRules $nsgRuleRDP;
+        $nic = New-AzNetworkInterface -Name $NICName -ResourceGroupName $rgname -Location $loc -SubnetId $vnet.Subnets[0].Id -NetworkSecurityGroupId $nsg.Id -EnableAcceleratedNetworking;
+
+        # VM
+        $vmConfig = New-AzVMConfig -VMName $vmname -VMSize $vmsize;
+        $vmConfig = Set-AzVMOperatingSystem -VM $vmConfig -Windows -ComputerName $vmname;
+        $vmConfig = Add-AzVMNetworkInterface -VM $vmConfig -Id $nic.Id;
+
+        # Verify a VM needs the ComputerName. 
+        Assert-ThrowsContains {New-AzVM -ResourceGroupName $rgname -Location $loc -VM $vmConfig; } "Required parameter"
+        
+        # Verify the VM is created successfully. 
+        $vmConfig = New-AzVMConfig -VMName $vmname -VMSize $vmsize;
+        $vmConfig = Set-AzVMOperatingSystem -VM $vmConfig -Windows -ComputerName $vmname -Credential $cred;
+        $vmConfig = Add-AzVMNetworkInterface -VM $vmConfig -Id $nic.Id;
+        New-AzVM -ResourceGroupName $rgname -Location $loc -VM $vmconfig;
+
+        $vm = Get-AzVM -ResourceGroupName $rgname -Name $vmname;
+        Assert-NotNull $vm;
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname;
+    }
+}
+
+function Test-VMwithSSHKeyEd25519
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName;
+    $loc = Get-ComputeVMLocation;
+
+    try
+    {
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+
+
+        # create credential
+        $securePassword = Get-PasswordForVM | ConvertTo-SecureString -AsPlainText -Force;
+        $user = Get-ComputeTestResourceName;
+        $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
+
+        # Add one VM from creation
+        $vmname = '1' + $rgname;
+        $domainNameLabel = "d1" + $rgname;
+        $sshKeyName = "s" + $rgname
+        $vm = New-AzVM -ResourceGroupName $rgname -Name $vmname -Credential $cred -Image CentOS85Gen2 -DomainNameLabel $domainNameLabel -SshKeyname $sshKeyName -generateSshkey -SshKeyType 'Ed25519'
+
+        $vm = Get-AzVm -ResourceGroupName $rgname -Name $vmname
+        $sshKey = Get-AzSshKey -ResourceGroupName $rgname -Name $sshKeyName
+
+        #assert compare
+        Assert-AreEqual $vm.OSProfile.LinuxConfiguration.Ssh.PublicKeys[0].KeyData $sshKey.publickey
+
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $rgname;
+    }
+}
+
+function TestGen-setazvm
+{
+    # Setup
+    $rgname = Get-ComputeTestResourceName;
+    $loc = Get-ComputeVMLocation;
+
+    try
+    {
+        New-AzResourceGroup -Name $rgname -Location $loc -Force;
+        # VM Profile & Hardware
+        $vmname = 'vm' + $rgname;
+        $domainNameLabel = "d1" + $rgname;
+
+        $vnetname = "vn" + $rgname;
+        $vnetAddress = "10.0.0.0/16";
+        $subnetname = "slb" + $rgname;
+        $subnetAddress = "10.0.2.0/24";
+        $OSDiskName = $vmname + "-osdisk";
+        $NICName = $vmname+ "-nic";
+        $NSGName = $vmname + "-NSG";
+        $OSDiskSizeinGB = 128;
+        $VMSize = "Standard_DS2_v2";
+        $PublisherName = "MicrosoftWindowsServer";
+        $Offer = "WindowsServer";
+        $SKU = "2022-datacenter-azure-edition";
+        $version = "latest";
+
+        # Creating a VM using Simple parameterset
+        $password = Get-PasswordForVM;
+        $securePassword = $password | ConvertTo-SecureString -AsPlainText -Force;
+        $user = Get-ComputeTestResourceName;
+        $cred = New-Object System.Management.Automation.PSCredential ($user, $securePassword);
+
+        $frontendSubnet = New-AzVirtualNetworkSubnetConfig -Name $subnetname -AddressPrefix $subnetAddress;
+
+        $vnet = New-AzVirtualNetwork -Name $vnetname -ResourceGroupName $rgname -Location $loc -AddressPrefix $vnetAddress -Subnet $frontendSubnet;
+
+        $nsgRuleRDP = New-AzNetworkSecurityRuleConfig -Name RDP  -Protocol Tcp  -Direction Inbound -Priority 1001 -SourceAddressPrefix * -SourcePortRange * -DestinationAddressPrefix * -DestinationPortRange 3389 -Access Allow;
+        $nsg = New-AzNetworkSecurityGroup -ResourceGroupName $RGName -Location $loc -Name $NSGName  -SecurityRules $nsgRuleRDP;
+        $nic = New-AzNetworkInterface -Name $NICName -ResourceGroupName $RGName -Location $loc -SubnetId $vnet.Subnets[0].Id -NetworkSecurityGroupId $nsg.Id -EnableAcceleratedNetworking;
+
+        # VM
+        $vmConfig = New-AzVMConfig -VMName $vmName -VMSize $VMSize;
+        Set-AzVMOperatingSystem -VM $vmConfig -Windows -ComputerName $vmName -Credential $cred;
+        Set-AzVMSourceImage -VM $vmConfig -PublisherName $PublisherName -Offer $Offer -Skus $SKU -Version $version ;
+        Add-AzVMNetworkInterface -VM $vmConfig -Id $nic.Id;
+
+        New-AzVM -ResourceGroupName $rgname -Location $loc -VM $vmConfig;
+
+        # Update VM with new parameters
+        Set-AzVM -ResourceGroupName $rgname -Name $vmname -ScheduledEventsAdditionalEndpoints $true -EnableUserRebootScheduledEvents $true -EnableUserRedeployScheduledEvents $true;
+
+        $vm = Get-AzVM -ResourceGroupName $rgname -Name $vmname;
+
+        # Validate new parameters
+        Assert-AreEqual $vm.ScheduledEventsAdditionalEndpoints $true;
+        Assert-AreEqual $vm.EnableUserRebootScheduledEvents $true;
+        Assert-AreEqual $vm.EnableUserRedeployScheduledEvents $true;
+    }
+    finally
+    {
+        # Cleanup
+        Remove-AzResourceGroup -Name $rgname -Force -ErrorAction SilentlyContinue;
+    }
 }
