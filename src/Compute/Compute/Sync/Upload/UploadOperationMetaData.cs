@@ -44,8 +44,19 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
         [DataMember(EmitDefaultValue = false, Order = 50)]
         public long VhdSize { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Order = 60)]
-        public byte[] MD5Hash { get; set; }
+        /// <summary>
+        /// Whole-file MD5 hash written by earlier versions of Add-AzVhd. It is no longer calculated;
+        /// it is kept only so that upload metadata written by those versions can still be read.
+        /// </summary>
+        [DataMember(Name = "MD5Hash", EmitDefaultValue = false, Order = 60)]
+        public byte[] LegacyMD5Hash { get; set; }
+
+        /// <summary>
+        /// Whole-file SHA-256 hash of the local VHD. Used to check that a resumed or patched upload
+        /// is for the same file, and as the completion marker of a finished blob upload.
+        /// </summary>
+        [DataMember(EmitDefaultValue = false, Order = 70)]
+        public byte[] Sha256Hash { get; set; }
 
         public DateTime CreatedDateUtc
         {
@@ -60,6 +71,19 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
         }
 
         public static FileMetaData Create(string filePath)
+        {
+            return Create(filePath, calculateHash: true);
+        }
+
+        /// <summary>
+        /// Creates the metadata for a local VHD file.
+        /// </summary>
+        /// <param name="filePath">Path of the local VHD file.</param>
+        /// <param name="calculateHash">
+        /// When false, the whole-file hash is not calculated. The managed disk upload does not use the
+        /// hash, so it skips the extra full read of the file.
+        /// </param>
+        public static FileMetaData Create(string filePath, bool calculateHash)
         {
             var fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -76,14 +100,14 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                     LastModifiedDateUtc = DateTime.SpecifyKind(fileInfo.LastWriteTimeUtc, DateTimeKind.Utc),
                     Size = fileInfo.Length,
                     VhdSize = stream.Length,
-                    MD5Hash = CalculateMd5Hash(stream, filePath)
+                    Sha256Hash = calculateHash ? CalculateSha256Hash(stream, filePath) : null
                 };
             }
         }
 
-        private static byte[] CalculateMd5Hash(Stream stream, string filePath)
+        private static byte[] CalculateSha256Hash(Stream stream, string filePath)
         {
-            using (var md5 = MD5.Create())
+            using (var sha256 = SHA256.Create())
             {
                 Program.SyncOutput.MessageCalculatingMD5Hash(filePath);
                 ProgressStatus hashStatus = new ProgressStatus(0, stream.Length, new ComputeStats());
@@ -96,8 +120,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                     Task<byte[]> task = Task<byte[]>.Factory.StartNew(() =>
                     {
                         var bs = new BufferedStream(swrp);
-                        var md5Hash = md5.ComputeHash(bs);
-                        return md5Hash;
+                        return sha256.ComputeHash(bs);
                     });
 
                     while (!task.Wait(TimeSpan.FromSeconds(1)))
@@ -143,6 +166,16 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
 
         [DataMember(EmitDefaultValue = false, Order = 20)]
         public SystemInformation SystemInformation { get; set; }
+    }
+
+    /// <summary>
+    /// Blob metadata entry that marks a finished blob upload. Its value is the Base64-encoded SHA-256
+    /// hash of the uploaded VHD file. It replaces the Content-MD5 property that earlier versions set
+    /// when an upload finished.
+    /// </summary>
+    public static class CompletedUploadMetaData
+    {
+        public const string MetaDataKey = "uploadsha256";
     }
 
     [DataContract]

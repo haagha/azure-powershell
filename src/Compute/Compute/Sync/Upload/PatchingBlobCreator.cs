@@ -66,10 +66,16 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
 
             FileMetaData fileMetaData = GetFileMetaData(baseBlob, localBaseVhdPath);
 
-            var md5Hash = baseBlob.GetBlobMd5Hash();
-            if (!md5Hash.SequenceEqual(fileMetaData.MD5Hash))
+            var baseImageSha256Hash = baseBlob.GetUploadCompletedSha256Hash();
+            if (baseImageSha256Hash == null)
             {
-                var message = String.Format("Patching cannot proceed, MD5 hash of base image in blob storage ({0}) and base VHD file ({1}) does not match ",
+                var message = String.Format("Patching cannot proceed, the base image in blob storage ({0}) has no SHA-256 upload marker. Base images uploaded by earlier versions of Add-AzVhd are not supported for patching. Upload the base image again with the OverWrite option, then retry.",
+                                            baseBlob.Uri);
+                throw new InvalidOperationException(message);
+            }
+            if (!baseImageSha256Hash.SequenceEqual(fileMetaData.Sha256Hash))
+            {
+                var message = String.Format("Patching cannot proceed, SHA-256 hash of base image in blob storage ({0}) and base VHD file ({1}) does not match ",
                                             baseBlob.Uri,
                                             localBaseVhdPath);
                 throw new InvalidOperationException(message);
@@ -94,6 +100,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
             using (var bmds = new BlobMetaDataScope(destinationBlob))
             {
                 bmds.Current.RemoveBlobMd5Hash();
+                bmds.Current.RemoveUploadCompletedMarker();
                 bmds.Current.SetUploadMetaData(OperationMetaData);
                 bmds.Complete();
             }
