@@ -5,6 +5,7 @@
     Changes for the upcoming release should go under the section titled "Upcoming Release", and should adhere to the following format:
 
     ## Upcoming Release
+    * [Breaking Change] `Add-AzVhd` no longer sets Content-MD5 on uploaded blobs and uses SHA-256 metadata instead. Uploads started by older versions must be restarted with `-OverWrite`, and older base images must be re-uploaded before patching. [#50]
     * Overview of change #1
         - Additional information about change #1
     * Overview of change #2

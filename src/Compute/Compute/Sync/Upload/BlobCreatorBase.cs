@@ -87,9 +87,9 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
             }
         }
 
-        public byte[] MD5HashOfLocalVhd
+        public byte[] Sha256HashOfLocalVhd
         {
-            get { return OperationMetaData.FileMetaData.MD5Hash; }
+            get { return OperationMetaData.FileMetaData.Sha256Hash; }
         }
 
         private static void AssertIfValidVhdSize(FileInfo fileInfo)
@@ -134,7 +134,9 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 {
                     Program.SyncOutput.MessageResumingUpload();
 
-                    if (destinationBlob.GetBlobMd5Hash(requestOptions) != null)
+                    destinationBlob.FetchAttributesAsync(new AccessCondition(), requestOptions, operationContext: null)
+                        .ConfigureAwait(false).GetAwaiter().GetResult();
+                    if (destinationBlob.IsUploadComplete())
                     {
                         throw new InvalidOperationException(
                             "An image already exists in blob storage with this name. If you want to upload again, use the Overwrite option.");
@@ -142,6 +144,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                     var metaData = destinationBlob.GetUploadMetaData();
 
                     AssertMetaDataExists(metaData);
+                    AssertSha256Metadata(metaData.FileMetaData);
                     AssertMetaDataMatch(metaData, OperationMetaData);
 
                     PopulateContextWithUploadableRanges(localVhd, context, true);
@@ -151,7 +154,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 {
                     CreateRemoteBlobAndPopulateContext(context);
                 }
-                context.Md5HashOfLocalVhd = MD5HashOfLocalVhd;
+                context.Sha256HashOfLocalVhd = Sha256HashOfLocalVhd;
                 completed = true;
             }
             finally
@@ -345,8 +348,17 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
             }
         }
 
-        private static List<string> CompareFileMetaData(FileMetaData blobFileMetaData, FileMetaData localFileMetaData)
+        internal static void AssertSha256Metadata(FileMetaData fileMetaData)
         {
+            if (fileMetaData?.Sha256Hash == null || fileMetaData.Sha256Hash.Length != 32)
+            {
+                throw new InvalidOperationException("The existing upload does not have valid SHA-256 metadata. Use -OverWrite to upload again.");
+            }
+        }
+
+        internal static List<string> CompareFileMetaData(FileMetaData blobFileMetaData, FileMetaData localFileMetaData)
+        {
+            AssertSha256Metadata(blobFileMetaData);
             var fileMetaDataMessages = new List<string>();
             if (blobFileMetaData.VhdSize != localFileMetaData.VhdSize)
             {
@@ -364,12 +376,9 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 fileMetaDataMessages.Add(message);
             }
 
-            if (!blobFileMetaData.MD5Hash.SequenceEqual(localFileMetaData.MD5Hash))
+            if (localFileMetaData.Sha256Hash == null || !blobFileMetaData.Sha256Hash.SequenceEqual(localFileMetaData.Sha256Hash))
             {
-                var message = String.Format("MD5 hash of VHD file in blob storage ({0}) and local VHD file ({1}) does not match ",
-                                            blobFileMetaData.MD5Hash.ToString(","),
-                                            localFileMetaData.MD5Hash.ToString(","));
-                fileMetaDataMessages.Add(message);
+                fileMetaDataMessages.Add("SHA-256 hash of VHD file in blob storage and local VHD file does not match. Use -OverWrite to upload again.");
             }
 
 

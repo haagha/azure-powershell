@@ -38,7 +38,6 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
     public class DiskUploadCreator
     {
         protected FileInfo localVhd;
-        private LocalMetaData operationMetaData;
 
         private const int MegaByte = 1024 * 1024;
         private const int PageSizeInBytes = 2 * MegaByte;
@@ -65,7 +64,6 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
                 PopulateContextWithUploadableRanges(localVhd, context, false);
                 PopulateContextWithDataToUpload(localVhd, context);
 
-                context.Md5HashOfLocalVhd = MD5HashOfLocalVhd;
                 completed = true;
             }
             finally
@@ -76,28 +74,6 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
                 }
             }
             return context;
-        }
-
-        public LocalMetaData OperationMetaData
-        {
-            [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-            get
-            {
-                if (this.operationMetaData == null)
-                {
-                    this.operationMetaData = new LocalMetaData
-                    {
-                        FileMetaData = FileMetaData.Create(localVhd.FullName),
-                        SystemInformation = SystemInformation.Create()
-                    };
-                }
-                return operationMetaData;
-            }
-        }
-
-        public byte[] MD5HashOfLocalVhd
-        {
-            get { return OperationMetaData.FileMetaData.MD5Hash; }
         }
 
         public static void AssertIfValidhVhd(FileInfo vhdFile)

@@ -66,10 +66,15 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
 
             FileMetaData fileMetaData = GetFileMetaData(baseBlob, localBaseVhdPath);
 
-            var md5Hash = baseBlob.GetBlobMd5Hash();
-            if (!md5Hash.SequenceEqual(fileMetaData.MD5Hash))
+            baseBlob.FetchAttributesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            if (!baseBlob.Metadata.TryGetValue(CloudPageBlobExtensions.UploadSha256MetadataKey, out var baseHash)
+                || String.IsNullOrEmpty(baseHash))
             {
-                var message = String.Format("Patching cannot proceed, MD5 hash of base image in blob storage ({0}) and base VHD file ({1}) does not match ",
+                throw new InvalidOperationException("Patching cannot proceed because the base image has no SHA-256 metadata. Re-upload the base image using -OverWrite.");
+            }
+            if (!String.Equals(baseHash, Convert.ToBase64String(fileMetaData.Sha256Hash), StringComparison.Ordinal))
+            {
+                var message = String.Format("Patching cannot proceed, SHA-256 hash of base image in blob storage ({0}) and base VHD file ({1}) does not match ",
                                             baseBlob.Uri,
                                             localBaseVhdPath);
                 throw new InvalidOperationException(message);
@@ -94,6 +99,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
             using (var bmds = new BlobMetaDataScope(destinationBlob))
             {
                 bmds.Current.RemoveBlobMd5Hash();
+                bmds.Current.Metadata.Remove(CloudPageBlobExtensions.UploadSha256MetadataKey);
                 bmds.Current.SetUploadMetaData(OperationMetaData);
                 bmds.Complete();
             }

@@ -29,7 +29,6 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
     public class DiskSynchronizer
     {
         private readonly UploadContextDisk context;
-        private byte[] md5Hash;
         private readonly IEnumerable<DataWithRange> dataWithRanges;
         private readonly int maxParallelism;
         private readonly long dataToUpload;
@@ -39,7 +38,6 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
         public DiskSynchronizer(UploadContextDisk context, int maxParallelism)
         {
             this.context = context;
-            this.md5Hash = context.Md5HashOfLocalVhd;
             this.dataWithRanges = context.UploadableDataWithRanges;
             this.dataToUpload = context.UploadableDataSize;
             this.alreadyUploadedData = context.AlreadyUploadedDataSize;

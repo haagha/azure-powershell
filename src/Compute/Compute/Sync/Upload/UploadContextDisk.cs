@@ -35,8 +35,6 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
 
         public long AlreadyUploadedDataSize { get; set; }
 
-        public byte[] Md5HashOfLocalVhd { get; set; }
-
         public Mutex SingleInstanceMutex { get; set; }
 
         public void Dispose()

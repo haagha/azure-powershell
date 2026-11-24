@@ -26,7 +26,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
     public class BlobSynchronizer
     {
         private readonly UploadContext context;
-        private byte[] md5Hash;
+        private byte[] sha256Hash;
         private readonly IEnumerable<DataWithRange> dataWithRanges;
         private readonly int maxParallelism;
         private readonly long dataToUpload;
@@ -36,7 +36,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
         public BlobSynchronizer(UploadContext context, int maxParallelism)
         {
             this.context = context;
-            this.md5Hash = context.Md5HashOfLocalVhd;
+            this.sha256Hash = context.Sha256HashOfLocalVhd;
             this.dataWithRanges = context.UploadableDataWithRanges;
             this.dataToUpload = context.UploadableDataSize;
             this.alreadyUploadedData = context.AlreadyUploadedDataSize;
@@ -88,7 +88,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 {
                     using (var bdms = new BlobMetaDataScope(new CloudPageBlob(blob.Uri, blob.ServiceClient.Credentials)))
                     {
-                        bdms.Current.SetBlobMd5Hash(md5Hash);
+                        bdms.Current.SetUploadSha256Hash(sha256Hash);
                         bdms.Current.CleanUpUploadMetaData();
                         bdms.Complete();
                     }
