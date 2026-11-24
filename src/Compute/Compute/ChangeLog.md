@@ -20,6 +20,11 @@
 
 -->
 ## Upcoming Release
+* [Breaking Change] `Add-AzVhd` no longer uses MD5.
+    - Uploads to a blob (`DefaultParameterSet`) no longer set the blob's `Content-MD5` property when the upload finishes. A finished upload is now marked by the `uploadsha256` blob metadata entry, which holds the Base64-encoded SHA-256 hash of the uploaded VHD file. Blobs uploaded by earlier versions, which carry `Content-MD5`, are still detected as finished uploads.
+    - Resuming an upload now compares SHA-256 hashes. An unfinished upload started by an earlier version cannot be resumed; use `-OverWrite` to upload the file again.
+    - `-BaseImageUriToPatch` now requires a base image uploaded by this version. Upload base images that were uploaded by earlier versions again with `-OverWrite` before patching.
+    - Uploads to a managed disk (`DirectUploadToManagedDiskSet`) no longer calculate a whole-file hash, which removes a full extra read of the VHD file.
 * Removed unused MD5 calculations from disk and blob uploads and switched disk and blob upload lock names and deterministic Azure Enhanced Monitoring test IDs to SHA-256.
 * Added `Set-AzSnapshotImmutabilityPolicy` and `Remove-AzSnapshotImmutabilityPolicy`, and exposed typed immutability policy details consistently in snapshot results. [Azure/azure-powershell-cmdlet-review-pr#1579]
 * Added a preview message to `New-AzCapacityReservationGroup` indicating that the Open Capacity Reservation feature is in preview.
