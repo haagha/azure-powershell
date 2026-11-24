@@ -64,8 +64,8 @@ namespace Microsoft.WindowsAzure.Commands.Sync
         void ProgressOperationStatus(double percentComplete, double avgThroughputMbps, TimeSpan remainingTime);
         void ProgressOperationComplete(TimeSpan elapsed);
 
-        void MessageCalculatingSHA256Hash(string filePath);
-        void MessageSHA256HashCalculationFinished();
+        void MessageCalculatingMD5Hash(string filePath);
+        void MessageMD5HashCalculationFinished();
 
         void MessageRetryingAfterANetworkDisruption();
         void DebugRetryingAfterException(Exception lastException);

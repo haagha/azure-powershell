@@ -64,14 +64,13 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 blobSize = vhdFile.Footer.CurrentSize;
             }
 
-            FileMetaData fileMetaData = GetFileMetaData(baseBlob, localBaseVhdPath);
-
             baseBlob.FetchAttributesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (!baseBlob.Metadata.TryGetValue(CloudPageBlobExtensions.UploadSha256MetadataKey, out var baseHash)
                 || String.IsNullOrEmpty(baseHash))
             {
-                throw new InvalidOperationException("Patching cannot proceed because the base image has no SHA-256 metadata. Re-upload the base image using -OverWrite.");
+                throw new InvalidOperationException("Patching cannot proceed because the base image has no SHA-256 metadata. Upload the base image to a new blob and use its URI.");
             }
+            FileMetaData fileMetaData = GetFileMetaData(baseBlob, localBaseVhdPath);
             if (!String.Equals(baseHash, Convert.ToBase64String(fileMetaData.Sha256Hash), StringComparison.Ordinal))
             {
                 var message = String.Format("Patching cannot proceed, SHA-256 hash of base image in blob storage ({0}) and base VHD file ({1}) does not match ",

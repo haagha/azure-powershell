@@ -163,12 +163,12 @@ namespace Microsoft.Azure.Commands.Compute.Models
             }
         }
 
-        public void MessageCalculatingSHA256Hash(string filePath)
+        public void MessageCalculatingMD5Hash(string filePath)
         {
             LogMessage(Rsrc.PSSyncOutputEventsCalculatingMD5HashForFile, filePath);
         }
 
-        public void MessageSHA256HashCalculationFinished()
+        public void MessageMD5HashCalculationFinished()
         {
             LogMessage(Rsrc.PSSyncOutputEventsMD5HashCalculationFinished);
         }

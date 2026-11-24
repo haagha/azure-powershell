@@ -88,7 +88,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
         {
             using (var sha256 = SHA256.Create())
             {
-                Program.SyncOutput.MessageCalculatingSHA256Hash(filePath);
+                Program.SyncOutput.MessageCalculatingMD5Hash(filePath);
                 ProgressStatus hashStatus = new ProgressStatus(0, stream.Length, new ComputeStats());
 
                 using (ProgressTracker progressTracker = new ProgressTracker(hashStatus,
@@ -107,7 +107,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                         progressTracker.Update();
                     }
 
-                    Program.SyncOutput.MessageSHA256HashCalculationFinished();
+                    Program.SyncOutput.MessageMD5HashCalculationFinished();
                     return task.Result;
                 }
             }
