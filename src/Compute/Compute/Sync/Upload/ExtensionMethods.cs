@@ -25,6 +25,8 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
 {
     public static class CloudPageBlobExtensions
     {
+        public const string UploadSha256MetadataKey = "uploadsha256";
+
         public static IEnumerable<IListBlobItem> ListContainerBlobs(
             this CloudBlobContainer container,
             bool useFlatBlobListing,
@@ -69,27 +71,15 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 : null;
         }
 
-        public static byte[] GetBlobMd5Hash(this CloudPageBlob blob)
+        public static bool IsUploadComplete(this CloudPageBlob blob)
         {
-            blob.FetchAttributesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            return String.IsNullOrEmpty(blob.Properties.ContentMD5)
-                ? null
-                : Convert.FromBase64String(blob.Properties.ContentMD5);
+            return !String.IsNullOrEmpty(blob.Properties.ContentMD5)
+                || (blob.Metadata.TryGetValue(UploadSha256MetadataKey, out var hash) && !String.IsNullOrEmpty(hash));
         }
 
-        public static byte[] GetBlobMd5Hash(this CloudPageBlob blob, BlobRequestOptions requestOptions)
+        public static void SetUploadSha256Hash(this CloudPageBlob blob, byte[] hash)
         {
-            blob.FetchAttributesAsync(new AccessCondition(), requestOptions, operationContext: null)
-                .ConfigureAwait(false).GetAwaiter().GetResult();
-            return String.IsNullOrEmpty(blob.Properties.ContentMD5)
-                ? null
-                : Convert.FromBase64String(blob.Properties.ContentMD5);
-        }
-
-        public static void SetBlobMd5Hash(this CloudPageBlob blob, byte[] md5Hash)
-        {
-            var base64String = Convert.ToBase64String(md5Hash);
-            blob.Properties.ContentMD5 = base64String;
+            blob.Metadata[UploadSha256MetadataKey] = Convert.ToBase64String(hash);
         }
 
         public static void RemoveBlobMd5Hash(this CloudPageBlob blob)

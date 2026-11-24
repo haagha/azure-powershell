@@ -114,6 +114,7 @@ Accept wildcard characters: False
 ### -BaseImageUriToPatch
 Specifies the URI to a base image blob in Azure Blob Storage.
 An SAS can be specified as the value for this parameter.
+The base image must have SHA-256 metadata from an upload using the current version of `Add-AzVhd`. Upload older base images to a new blob and use the new URI before patching.
 
 ```yaml
 Type: System.Uri

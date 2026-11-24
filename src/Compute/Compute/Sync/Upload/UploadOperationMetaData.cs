@@ -44,8 +44,11 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
         [DataMember(EmitDefaultValue = false, Order = 50)]
         public long VhdSize { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Order = 60)]
-        public byte[] MD5Hash { get; set; }
+        [DataMember(Name = "MD5Hash", EmitDefaultValue = false, Order = 60)]
+        public byte[] LegacyMD5Hash { get; set; }
+
+        [DataMember(EmitDefaultValue = false, Order = 70)]
+        public byte[] Sha256Hash { get; set; }
 
         public DateTime CreatedDateUtc
         {
@@ -76,14 +79,14 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                     LastModifiedDateUtc = DateTime.SpecifyKind(fileInfo.LastWriteTimeUtc, DateTimeKind.Utc),
                     Size = fileInfo.Length,
                     VhdSize = stream.Length,
-                    MD5Hash = CalculateMd5Hash(stream, filePath)
+                    Sha256Hash = CalculateSha256Hash(stream, filePath)
                 };
             }
         }
 
-        private static byte[] CalculateMd5Hash(Stream stream, string filePath)
+        private static byte[] CalculateSha256Hash(Stream stream, string filePath)
         {
-            using (var md5 = MD5.Create())
+            using (var sha256 = SHA256.Create())
             {
                 Program.SyncOutput.MessageCalculatingMD5Hash(filePath);
                 ProgressStatus hashStatus = new ProgressStatus(0, stream.Length, new ComputeStats());
@@ -96,8 +99,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                     Task<byte[]> task = Task<byte[]>.Factory.StartNew(() =>
                     {
                         var bs = new BufferedStream(swrp);
-                        var md5Hash = md5.ComputeHash(bs);
-                        return md5Hash;
+                        return sha256.ComputeHash(bs);
                     });
 
                     while (!task.Wait(TimeSpan.FromSeconds(1)))

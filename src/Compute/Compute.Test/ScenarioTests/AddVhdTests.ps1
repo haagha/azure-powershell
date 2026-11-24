@@ -62,7 +62,7 @@ function Test-AddVhd
               Write-Output ($storageKey.Key1);
 
               $destBlobHandle = GetBlobHandle $vhdDestUri $storageKey.Key1;
-              Assert-True {VerifyMD5hash $destBlobHandle $testItem.md5hash};
+              Assert-True {VerifyUploadSha256 $destBlobHandle};
 
               $vhdDownloadPath = $vhdLocalPath + "-download.vhd";
 
@@ -99,20 +99,10 @@ function GetBlobHandle
     return [Microsoft.WindowsAzure.Commands.Sync.Download.BlobHandle] $blob;
 }
 
-function VerifyMD5hash
+function VerifyUploadSha256
 {
-    param([System.Object] $blobHandle, [string] $md5hash)
+    param([System.Object] $blobHandle)
 
-    $blobMd5 = $blobHandle.Blob.Properties.ContentMD5;
-    Write-Output ("MD5 hash of the local file: " + $md5hash);
-    if ([System.String]::IsNullOrEmpty($blobMd5))
-    {
-        Write-Output ("The blob does not have MD5 value!!!");
-        return $false;
-    }
-    else
-    {
-        Write-Output ("MD5 hash of blob, "+ $blobHandle.Blob.Uri.ToString() + ", is "+ $blobMd5);
-        return $blobMd5.Equals($md5hash);
-    }
+    return -not [System.String]::IsNullOrEmpty($blobHandle.Blob.Metadata['uploadsha256']) -and
+        [System.String]::IsNullOrEmpty($blobHandle.Blob.Properties.ContentMD5)
 }
