@@ -65,7 +65,6 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
                 PopulateContextWithUploadableRanges(localVhd, context, false);
                 PopulateContextWithDataToUpload(localVhd, context);
 
-                context.Md5HashOfLocalVhd = MD5HashOfLocalVhd;
                 completed = true;
             }
             finally
@@ -87,17 +86,12 @@ namespace Microsoft.Azure.Commands.Compute.Sync.Upload
                 {
                     this.operationMetaData = new LocalMetaData
                     {
-                        FileMetaData = FileMetaData.Create(localVhd.FullName),
+                        FileMetaData = FileMetaData.Create(localVhd.FullName, calculateHash: false),
                         SystemInformation = SystemInformation.Create()
                     };
                 }
                 return operationMetaData;
             }
-        }
-
-        public byte[] MD5HashOfLocalVhd
-        {
-            get { return OperationMetaData.FileMetaData.MD5Hash; }
         }
 
         public static void AssertIfValidhVhd(FileInfo vhdFile)

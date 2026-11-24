@@ -69,27 +69,56 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 : null;
         }
 
-        public static byte[] GetBlobMd5Hash(this CloudPageBlob blob)
-        {
-            blob.FetchAttributesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            return String.IsNullOrEmpty(blob.Properties.ContentMD5)
-                ? null
-                : Convert.FromBase64String(blob.Properties.ContentMD5);
-        }
-
-        public static byte[] GetBlobMd5Hash(this CloudPageBlob blob, BlobRequestOptions requestOptions)
+        /// <summary>
+        /// Fetches the blob attributes and returns true when the blob holds a finished upload: either the
+        /// SHA-256 completion marker written by this version, or a Content-MD5 value set by an earlier version.
+        /// </summary>
+        public static bool IsUploadCompleted(this CloudPageBlob blob, BlobRequestOptions requestOptions)
         {
             blob.FetchAttributesAsync(new AccessCondition(), requestOptions, operationContext: null)
                 .ConfigureAwait(false).GetAwaiter().GetResult();
-            return String.IsNullOrEmpty(blob.Properties.ContentMD5)
-                ? null
-                : Convert.FromBase64String(blob.Properties.ContentMD5);
+            return IsUploadCompleted(blob.Metadata, blob.Properties.ContentMD5);
         }
 
-        public static void SetBlobMd5Hash(this CloudPageBlob blob, byte[] md5Hash)
+        internal static bool IsUploadCompleted(IDictionary<string, string> metadata, string contentMd5)
         {
-            var base64String = Convert.ToBase64String(md5Hash);
-            blob.Properties.ContentMD5 = base64String;
+            return !String.IsNullOrEmpty(contentMd5) || GetUploadCompletedSha256Hash(metadata) != null;
+        }
+
+        /// <summary>
+        /// Fetches the blob attributes and returns the SHA-256 hash stored in the completion marker,
+        /// or null when the blob has no marker.
+        /// </summary>
+        public static byte[] GetUploadCompletedSha256Hash(this CloudPageBlob blob)
+        {
+            blob.FetchAttributesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            return GetUploadCompletedSha256Hash(blob.Metadata);
+        }
+
+        internal static byte[] GetUploadCompletedSha256Hash(IDictionary<string, string> metadata)
+        {
+            string value;
+            if (metadata == null
+                || !metadata.TryGetValue(CompletedUploadMetaData.MetaDataKey, out value)
+                || String.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+            return Convert.FromBase64String(value);
+        }
+
+        public static void SetUploadCompletedMarker(this CloudPageBlob blob, byte[] sha256Hash)
+        {
+            if (sha256Hash == null)
+            {
+                throw new ArgumentNullException("sha256Hash");
+            }
+            blob.Metadata[CompletedUploadMetaData.MetaDataKey] = Convert.ToBase64String(sha256Hash);
+        }
+
+        public static void RemoveUploadCompletedMarker(this CloudPageBlob blob)
+        {
+            blob.Metadata.Remove(CompletedUploadMetaData.MetaDataKey);
         }
 
         public static void RemoveBlobMd5Hash(this CloudPageBlob blob)

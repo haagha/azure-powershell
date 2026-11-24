@@ -56,6 +56,9 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
         private const int PageSizeInBytes = 2 * MegaByte;
         private const int MaxBufferSize = 20 * MegaByte;
 
+        internal const string LegacyUploadCannotResumeMessage =
+            "The upload in blob storage was started by an earlier version of Add-AzVhd and cannot be resumed by this version. Use the OverWrite option to upload the file again.";
+
         protected BlobCreatorBase(FileInfo localVhd, BlobUri blobDestination, ICloudPageBlobObjectFactory blobObjectFactory, bool overWrite)
         {
             this.localVhd = localVhd;
@@ -87,9 +90,9 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
             }
         }
 
-        public byte[] MD5HashOfLocalVhd
+        public byte[] Sha256HashOfLocalVhd
         {
-            get { return OperationMetaData.FileMetaData.MD5Hash; }
+            get { return OperationMetaData.FileMetaData.Sha256Hash; }
         }
 
         private static void AssertIfValidVhdSize(FileInfo fileInfo)
@@ -134,7 +137,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 {
                     Program.SyncOutput.MessageResumingUpload();
 
-                    if (destinationBlob.GetBlobMd5Hash(requestOptions) != null)
+                    if (destinationBlob.IsUploadCompleted(requestOptions))
                     {
                         throw new InvalidOperationException(
                             "An image already exists in blob storage with this name. If you want to upload again, use the Overwrite option.");
@@ -151,7 +154,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 {
                     CreateRemoteBlobAndPopulateContext(context);
                 }
-                context.Md5HashOfLocalVhd = MD5HashOfLocalVhd;
+                context.Sha256HashOfLocalVhd = Sha256HashOfLocalVhd;
                 completed = true;
             }
             finally
@@ -345,7 +348,7 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
             }
         }
 
-        private static List<string> CompareFileMetaData(FileMetaData blobFileMetaData, FileMetaData localFileMetaData)
+        internal static List<string> CompareFileMetaData(FileMetaData blobFileMetaData, FileMetaData localFileMetaData)
         {
             var fileMetaDataMessages = new List<string>();
             if (blobFileMetaData.VhdSize != localFileMetaData.VhdSize)
@@ -364,11 +367,15 @@ namespace Microsoft.WindowsAzure.Commands.Sync.Upload
                 fileMetaDataMessages.Add(message);
             }
 
-            if (!blobFileMetaData.MD5Hash.SequenceEqual(localFileMetaData.MD5Hash))
+            if (blobFileMetaData.Sha256Hash == null)
             {
-                var message = String.Format("MD5 hash of VHD file in blob storage ({0}) and local VHD file ({1}) does not match ",
-                                            blobFileMetaData.MD5Hash.ToString(","),
-                                            localFileMetaData.MD5Hash.ToString(","));
+                fileMetaDataMessages.Add(LegacyUploadCannotResumeMessage);
+            }
+            else if (localFileMetaData.Sha256Hash == null || !blobFileMetaData.Sha256Hash.SequenceEqual(localFileMetaData.Sha256Hash))
+            {
+                var message = String.Format("SHA-256 hash of VHD file in blob storage ({0}) and local VHD file ({1}) does not match ",
+                                            Convert.ToBase64String(blobFileMetaData.Sha256Hash),
+                                            localFileMetaData.Sha256Hash == null ? String.Empty : Convert.ToBase64String(localFileMetaData.Sha256Hash));
                 fileMetaDataMessages.Add(message);
             }
 
